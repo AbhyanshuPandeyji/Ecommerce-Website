@@ -390,3 +390,133 @@ npm i bcryptjs jsonwebtoken validator nodemailer cookie-parser body-parser
 - jwt -  to give a token for a user to define him when ever he want to use that login again
 - validator - to validate our email that it is genuine and right or not
 - nodemailer - when user input forgot password it should automatically send him the link to reset password ( can also work for the when user purchase and also when user enter wrong password multiple times to give him a warning)
+- cookie-parser - to save the token of the user in the given browser its safe because it can't be looked by the others i it was on local storage it will be unsafe to have jwt token
+- body-parser - for converting data from one type to another type of data , we use it for json to object things.
+
+
+### User Model - in model file in backend
+
+- this will be our user schema
+
+
+
+
+
+
+
+
+
+### User Route 
+
+- this will include a register and a sign-in page route api 
+- basic router import then the routes
+
+## Register route
+
+- create a register api with link to (/register) and with the logic function "registerUser"  - it will be a post request
+
+
+
+
+### User Controller 
+
+- create a "userController.js" file in the controller section 
+- add the user model into it
+- add error handling and async handling in it
+
+
+## Register user Controller
+- take the user data into an object {} with define requirements with by using req.body -  the requirement in our case will be name email password and avatar ( it can be skipped as it is not required true in user model)
+- then create a user by using "User.create(with specifics parameters)" function - in it User is the user model schema and this all be store in a variable name "user" for future purposes when we implement our front end
+- avatar will be put later when we do the front end part of the picture upload
+- email validator works 
+- this is right now not includes any authentication right now no bcrypt no jwt
+
+```
+This is what we entered in postman:
+{
+    "name": "Abhyanshu",
+    "email": "Abhyansh@gmail.com",
+    "password": "Abhyanshu"
+}
+
+this is what was the response in the server:
+{
+    "success": true,
+    "user": {
+        "name": "Abhyanshu",
+        "email": "Abhyansh@gmail.com",
+        "password": "Abhyanshu",
+        "avatar": {
+            "public_id": "This Is A Sample Id",
+            "url": "Profile Pic Url"
+        },
+        "role": "user",
+        "_id": "642f015940b0fc034055807e",
+        "__v": 0
+    }
+}
+
+this what our data looks like in the data base:
+_id : ObjectId('642f015940b0fc034055807e')
+name : "Abhyanshu"
+email : "Abhyansh@gmail.com"
+password : "Abhyanshu"
+
+avatar : Object
+    public_id : "This Is A Sample Id"
+    url : "Profile Pic Url"
+role :"user"
+__v : 0
+
+```
+
+- we have every data name, email , password if we entered it correctly if we don't provide any of the details required or provide it wrong we will get the specific error related to that inadequacy :
+example if we enter the email wrong we will get the error that "enter a valid email"
+
+- but we can clearly see that we can see the password in both the response and in the database which is not safe so we need to apply the authentication and security to it by bcrypt and jwt
+
+- we will use the user model and encrypt the password in there before uploading it to the database ( in twitter it was done in the auth route and in the controller page )
+
+### things learn during it
+- the this keyword cannot be used in the arrow function 
+```
+()=>{
+    this.something = something   X can't be used
+};
+```
+- the 10 in the bcrypt is the power of the password higher the power the stronger the password means longer the password the better it is and safe - but more power required the more power it will consume while creating it - we use await in it
+- we save the jwt token in cookie so we wont have to login again and again whenever we reload page or close the browser except in the case of logout - we also specify that this user is saved and he can access the routes that he has permissions to ( example you cannot open others profile and edit it but you can look at them and interact with them ).
+
+
+
+
+## Bcrypt to encrypt the password 
+- take the password pass it to the bcrypt and hash it to save it from to been seen 
+
+## JWT and Cookie
+- we will create the JWT token and save it to cookie 
+- we do this so we don't have to login again and again every time with our id/email and password every time we visit the site or load the page we want to be saved 
+- this will specify that the this user can access the granted route (depending upon you are a user or the admin of the site )
+- we will create a JWT_SECRET key to secure our site and user data so other cannot get the access of the other user and data and also cannot make themselves the admin to manipulate the site
+- we will create "JWT_EXPIRE" to set the limit date after which user have to re login again into the app  
+- now we will create the function for the JWTToken and call it in the Register user to save the token via user 
+```
+after we input this in the postman:
+{
+    "name": "Ramesh",
+    "email": "Ramesh@youtube.com",
+    "password": "RamesBabu"
+}
+
+after successful attempt we will output like this:
+{
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MmYxMWI4NWFjMjNlYzIwYjg0MjRkNCIsImlhdCI6MTDNEpUTHQoQUJMHLrErGJyHg89uy71MyuH4fQ.VCkoFhI36X16FSECDtrhdR0s8XyCqpCKS5VEHsV1Kus"
+}
+token is our json web token which is going to save in the cookie 
+```
+
+- first we will apply it to the register user
+
+### Login User - Sign In
