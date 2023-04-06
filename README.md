@@ -178,22 +178,215 @@ Postman console Output
 
 
 #### Product Routes 
+- req.params.id - takes the code from the url to check id is the id in the url
+- req.body - its the data stored in the database 
+- _id - its the id given to the specific component or the data stored in the mongodb to distinguish and unique value
 
 - create product works
 ```
 On Api route/url
-(/product/new)
+(/product/new , createProduct)
 ```
+
 - get all product works
 ```
 On Api route/url
-(/products/)
+(/products , getAllProducts) -
 ```
 
-- update product works 
+- update product works
+```
+On the api route/url
+(/product/:id , updateProduct) -
+```
 - delete product works 
 ```
 On the api route/url
-(/product/:id)
+(/product/:id , deleteProduct) -
 ```
-- next is get product details 
+- get product details works
+```
+On the api route/url
+(/product/:id , getProductDetails ) - 
+``` 
+
+
+#### Error Handling 
+
+- create a util file in the backend
+- create a errorHandler.js file in it 
+- create a class name "ErrorHandler" that inherits the "Error" class of the Node Js - this is related to the oops concepts - inheritance , class , objects , methods , encapsulation , property , abstraction .etc.
+- then in it take the constructor  - construct the output based on a given input
+- in that constructor take message and the status code provided by the condition in the controller logic
+- then this.statusCode = statusCode - it will create the status code to the status code is been passed in the error handle message thats what this do
+- then use Method  - 
+    Error.(this,this.constructor) - where this is the targeted object "Error" and the this.constructor is the constructor we used above - so we basically setting up our error to the new error code in node js
+
+- error handling middle ware
+
+#### middleware for error handler
+
+- create a middle ware file in the backend folder
+- create a error.js file in it 
+- import the error handler from the utils
+- then create a function which gives the response to the server when the error and message comes to the given problem statement
+
+```
+this is the error code in error.js middleware
+
+module.exports = (err,req,res,next)=>{
+
+    err.statusCode = err.statusCode || 500;
+    err.message = err.message || "Internal Server Error";
+
+    res.status(err.statusCode).json({
+        success:false,
+        error:err,
+    });
+};
+```
+it is just taking the status code and message and then sending the response to the server when the error occurs
+
+- importing the error.js in the app.js
+- app.use(errorMiddleware); - for app to use this error message system whenever required
+
+
+#### Applying error handling 
+
+- by removing the code in error handling of if and just remaining the if and the return statement
+- then adding the next function - next is an callback function which will take a function and give response back when take the data from that given function back
+parent child function style
+```
+next(new ErrorHandler("Product not Found", 404));
+```
+first one will be message and next one will be status code as the rule of giving the values to pass in the functions
+new is creating new object to take the value we intake after completion
+
+- test it  - error handling works ( req will always come before the res)
+```
+result after putting the wrong id
+{
+    "success": false,
+    "error": {
+        "statusCode": 404
+    }
+}
+```
+#### Error handler to Avoid Try and Catch for the logical functions
+- to tackle the async error we need to create a another block of code to run the error when things don't go our way
+- use a middleware "catchAsyncErrors" - in it we will pass the functional logic of our code
+- then create a function that will that will take our data in it "theFunc"
+- it will pass the function into the promise object  - which give the promise to the user that it will give an response  - async and await is the short version of it
+- 
+ ```
+ theFunc => (req,res,next) =>
+ {
+     Promise.resolve(theFunc(req,res,next)).catch
+ }
+```
+in this the <strong>Promise</strong> will take the function of our logic in controller file by <strong>"theFunc"</strong> and try to resolve it , if it doesn't resole it it goes to our catch which will go to the next step and give the error based on the insufficiency or unmatched or due to any error that the try code didn't work -  will give the response of which we written in the schema of our data. (in our case)
+
+``` 
+example of our code running :
+ Creating a product without name and price and it will give the both error
+ {
+    "success": false,
+    "message": "Product validation failed: price: Please Enter Product Price, name: Please Enter Product Name"
+}
+```
+
+#### Different types of Error Handling
+
+- ### Promise Rejection Error
+- in it if the url to reach is incorrect we want to crash our server
+- first we will save our server connection to a variable - app.listen into the server variable
+- for that we will remove the catch block in the database connection so this promise rejection will works
+- then to create it we will create a function for unhandledRejection
+ ```
+ process.on("unhandledRejection" , err = >{
+     // this is where we will close our server and exit
+     server.close(()=>{
+        // this will exit the server
+        process.exit(1)
+     })
+ })
+ ```
+- if the url will be wrong it will give the error
+```
+Error: Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"    
+shutting down the server due to Unhandled Promise Rejection
+[nodemon] app crashed - waiting for file changes before starting...
+```
+- ### Uncaught Exception 
+- this will be for any abnormalities present in the connect of the server any unknown variables or things 
+- it will on top to run server only when every thing is correct to go - it will also crash the server
+- same as the above except two things 1st it will be 
+ uncaughtException type and second we will directly exit the server because it didn't even started due to abnormalities 
+ ```
+ error will look like
+ Error: youtube( means an undefined object in the servers code ) is not defined
+shutting down the server due to Uncaught Exception
+[nodemon] app crashed - waiting for file changes before starting...
+ ```
+
+
+- ### The Mongodb error  - The Cast Error 
+- When the input of the url of server to database connection is incomplete not just  wrong but incomplete
+- it will be in error.js file 
+- in the function created earlier add if condition if the name of error is equal to the "CastError"
+- if yes then create a error message 
+- then add that new error message in the err by the new and ErrorHandler function  - then give that the message and status code and in the end it will be given back to the error message
+
+
+
+#### Adding the Features and Functionality to the Backend 
+
+### What it Will take and how 
+- it will take the all product via get all products route 
+- it will be called in it to filter for the user after the class been called
+```
+    const apiFeature = new ApiFeatures(Product.find() , req.query).search().filter().pagination(resultPerPage); // calling the function for the given functionality search, filter and for the pagination
+``` 
+- in it the query will be the function that will find the products - Product.find()
+- in it the queryStr will be equal to the queries entered in the params of the url -
+means how many type of this should be changed based on the parameters entered in the url 
+```
+example of a url with multiple parameter with multiple keys and values
+http://localhost:4000/api/v1/products?category=Laptop&price[gte]=1200&price[lt]=2000&page=1
+
+```
+- this includes all the parameter functions like search , filter and the pagination this can include page , category , price 
+
+
+### Pagination Feature 
+
+- go to utils folder
+- crete a folder named "addFeatures.js"
+- works 
+
+
+### Filter 
+- works 
+- it filter the category and the user input of the keyword in the query 
+- 
+
+
+### Search Product 
+- works 
+
+
+
+#### User Sign-in And Sign-up pages  - With Authorization
+
+### Authorization
+
+- installing some packages
+```
+npm i bcryptjs jsonwebtoken validator nodemailer cookie-parser body-parser
+
+```
+
+- bcrypt  - to safely store user password unreadable to any other human and computer unless proper authorization
+- jwt -  to give a token for a user to define him when ever he want to use that login again
+- validator - to validate our email that it is genuine and right or not
+- nodemailer - when user input forgot password it should automatically send him the link to reset password ( can also work for the when user purchase and also when user enter wrong password multiple times to give him a warning)

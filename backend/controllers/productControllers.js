@@ -1,100 +1,118 @@
 // Product Schema
 const Product = require("../models/productModel");
+const ErrorHandler = require("../utils/errorHandler");
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const ApiFeatures = require("../utils/addFeatures");
 
 
 
 // Create Product -- Admin route ( Only Admin will access it will be implemented later)
-exports.createProduct = async(req,res,next)=>{
+exports.createProduct = catchAsyncErrors(
+    async (req, res, next) => {
 
-    try {
         // to create a product
         const product = await Product.create(req.body);
 
         // product coming from above
-        res.status(200).json({
-            success:true,
-            product 
-        });
-            
-    } catch (error) {
-        console.log(error)
+        res.status(200).json({success: true, product});
+
+    }
+); 
+
+
+// Get All Products --
+exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
+
+    // for Pagination 
+    const resultPerPage = 5;
+
+    // for front end to show how many products are available
+    const productCount = await Product.countDocuments();
+    
+    // For filter features
+    const apiFeature = new ApiFeatures(Product.find() , req.query).search().filter().pagination(resultPerPage); // calling the function to of the search
+
+    
+    // to get all products
+    // Product.find() now we can't use it again it will be mess
+    // so we use apiFeature.query we got from the search
+    const products = await apiFeature.query;  
+
+    // products coming from above
+    res.status(200).json({
+        success: true, 
+        products,
+        productCount,
+    });
+
+
+});
+
+// Get Product Details - Of One
+exports.getProductDetails = catchAsyncErrors( async (req, res, next) => {
+
+    // to get product
+    const product = await Product.findById(req.params.id);
+
+    // if not found
+    if (!product) {
+        // next is just an callback function - 
+        return next(new ErrorHandler("Product Not Found", 404));
     }
 
-}
 
+    res.status(200).json({
+        success: true, 
+        product
+    });
 
-
-// Get All Products -- 
-exports.getAllProducts = async(req,res,next)=>{
-    try {
-        // to get all products
-        const products = await Product.find(); 
-        
-        // products coming from above
-        res.status(200).json({
-            success:true, products
-        });
-    } catch (error) {
-        console.log(error)        
-    }
-
-}
-
-// Get Product Details - later do it
+});
 
 
 // Update Product -- Admin only
-exports.updateProduct = async(req,res,next)=>{
-    try {
-        
-        let product = await  Product.findById(req.params.id);
-        if(!product){
-            return res.status(500).json({
-                success:false,
-                message:"Product not Found"
-            })
+exports.updateProduct = catchAsyncErrors(
+    async (req, res, next) => {
+
+        let product = await Product.findById(req.params.id);
+
+        if (!product) {
+            // next is just an callback function - 
+            return next(new ErrorHandler("Product Not Found", 500));
         }
-    
-        product = await Product.findByIdAndUpdate(req.params.id,req.body,{
-            new:true,
-            runValidators:true,
-            useFindAndModify:false
+
+        product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false
         })
-        
-        res.status(200).json({
-            success:true,
-            product
-        })
-    } catch (error) {
-        console.log(error)
-    }
+
+        res.status(200).json({success: true, product});
+
 }
+
+);
+
 
 // Delete Product - By Admin Only
 
-exports.deleteProduct = async(req,res,next)=>{
-    try {
-        // to get product id
-        const product = await Product.findById(req.params.id);
+exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
+        
+    // to get product id
+    const product = await Product.findById(req.params.id);
 
-        if(!product){
-            return res.status(500).json({
-                success:false,
-                message:"Product not Found"
-            })
-        }
+    if (!product) {
+        // next is just an callback function - 
+        return next(new ErrorHandler("Product Not Found", 404));
+    }
+
 
 
     // delete one instead of the remove() function
-       await product.deleteOne();
+    await product.deleteOne();
 
-       res.status(200).json({
-        success:true,
-        message:`Product with id : ${req.params.id} is been deleted `
-    })
+    res.status(200).json({success: true, message: `Product with id : ${
+            req.params.id
+        } is been deleted `});
 
-
-    } catch (error) {
-        console.log(error)
-    }
 }
+);
