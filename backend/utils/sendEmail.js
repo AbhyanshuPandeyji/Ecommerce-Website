@@ -5,6 +5,7 @@ const nodeMailer = require("nodemailer");
 const sendEmail = async (options)=>{
 
 
+    // this is the user/owner of the app who will send the mail to the user to authorize the further process by the mail requirements
     const transporter = nodeMailer.createTransport({
         // what king of service gmail or what - it is temporary
         // host:process.env.SMPT_HOST,

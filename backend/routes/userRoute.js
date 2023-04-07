@@ -10,7 +10,7 @@ router.route("/register").post(registerUser);
 // to login a user - for sign in
 router.route("/login").post(loginUser);
 
-// route to forgetting password
+// route for Forgot password
 router.route("/password/forgot").post(forgotPassword);
 
 // to logout the user

@@ -111,6 +111,8 @@ exports.forgotPassword = catchAsyncErrors( async(req,res,next)=>{
     // for sending the link to the mail - not the hash to click and start the resetting the password process
     // if local host don't work change it to 0.0.0.0
     // the url will be changed of the data base so ${res.get("host")}=localhost and for protocol can be http or https so = ${req.protocol}
+    // this will save the new generated token for the given amount of time for changing the password if it been used then password can be changed if it expires the password token just go back to normal
+    // the reset is just the route
     const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
 
     // message wil be send in email - \n is line break

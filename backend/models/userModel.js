@@ -107,7 +107,7 @@ userSchema.methods.getResetPasswordToken = function(){
     // Hashing and adding to userSchema - the reset password and the password expire are in the user schema
     this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    // validation of the reset password code generated - the otp thing
+    // validation of the reset password code generated - the otp thing - 15 minute window to change the password
     this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
 
