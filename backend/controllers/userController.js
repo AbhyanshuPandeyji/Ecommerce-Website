@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const sendToken = require("../utils/jwtToken");
+const sendEmail = require("../utils/sendEmail.js");
 
 
 
@@ -20,20 +22,25 @@ exports.registerUser = catchAsyncErrors( async(req,res,next)=>{
         }
     });
 
-    const token = user.getJWTToken();
+    // const token = user.getJWTToken();
 
-    res.status(201).json({
-        success:true,
-        // we don't need user anymore user ,
-        token, 
-    })
+    // res.status(201).json({
+    //     success:true,
+    //     // we don't need user anymore user ,
+    //     token, 
+    // })
 
+    //instead of above lengthy code every where we used this method
+    sendToken(user,201,res);
 }
 );
 
+
+
+// Login User - Sign in 
 exports.loginUser = catchAsyncErrors( async(req,res,next)=>{
 
-    const {email,password} = req.body;
+    const { email,password } = req.body;
 
     // checking if the user have given email and password both - the  message will be first and the status code will be next
     if(!email || !password){
@@ -44,7 +51,7 @@ exports.loginUser = catchAsyncErrors( async(req,res,next)=>{
     // finding user in database
     // we cannot write password here directly because we hashed it with bcrypt so only bcrypt can 
     // we selected password to not show so here we select it to be seen to enter
-    const user = await User.findOne({email }).select("+password");
+    const user =await User.findOne({email:email}).select("+password");
 
     // if user is not found
     if(!user){
@@ -63,14 +70,83 @@ exports.loginUser = catchAsyncErrors( async(req,res,next)=>{
     };
 
     // if all matched  email and password
-    const token = user.getJWTToken();
+    sendToken(user,200,res);
+// there is a problem in the login part saying the "next is not a function"
+}
+); 
 
-    res.status(201).json({
-        success:true,
-        // we don't need user anymore user,
-        token, 
+
+// Logout the user
+exports.logout = catchAsyncErrors( async(req,res,next)=>{
+
+    res.cookie("token",null,{
+        // to expire the cookie right away
+        expires:new Date(Date.now()),
+        httpOnly:true,
     })
 
-// there is a problem in the login part saying the "next is not a function"
+
+    res.status(200).json({
+        success:true,
+        message:"Logged Out Successfully",
+    });
+
+});
+
+
+
+// Forget Password 
+exports.forgotPassword = catchAsyncErrors( async(req,res,next)=>{
+    const user = await User.findOne({email: req.body.email});
+
+    if(!user){
+        return next(new  ErrorHandler("User Not Found",404));
+    }
+
+    // Get ResetPassword Token - 
+    const resetToken =  user.getResetPasswordToken();
+
+    await user.save({validateBeforeSave:false});
+
+    // for sending the link to the mail - not the hash to click and start the resetting the password process
+    // if local host don't work change it to 0.0.0.0
+    // the url will be changed of the data base so ${res.get("host")}=localhost and for protocol can be http or https so = ${req.protocol}
+    const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
+
+    // message wil be send in email - \n is line break
+    const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\n If you have not requested this email for resetting password then ignore it`
+
+
+    try {
+
+        // calling the email to be send
+        await sendEmail({
+            email: user.email,
+            subject:`Ecommerce Password Recovery`,
+            // message from above
+            message,
+
+        });
+
+        res.status(200).json({
+            success:true,
+            message:`Email sent to ${user.email} successfully`,
+        })
+
+        // method to send email
+
+
+        
+    } catch (error) {
+        // to undefined the saved data of the token and the expire time in the user schema resetPasswordToken 
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+
+        // now save it -its like the sate management
+        await user.save({validateBeforeSave:false});
+
+        return next(new ErrorHandler(error.message,500));
+
+    }
 }
 );

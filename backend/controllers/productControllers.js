@@ -10,6 +10,9 @@ const ApiFeatures = require("../utils/addFeatures");
 exports.createProduct = catchAsyncErrors(
     async (req, res, next) => {
 
+
+        req.body.user = req.user.id
+
         // to create a product
         const product = await Product.create(req.body);
 

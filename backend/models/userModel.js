@@ -3,7 +3,9 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 // to secure password
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+
+const crypto = require("crypto"); // it comes along already its a building module
 
 const userSchema = new mongoose.Schema({
 
@@ -55,7 +57,6 @@ userSchema.pre("save", async function(next){
     // if password is not modified then password will not rehash and it will go to next step 
     if(!this.isModified("password")){
         next();
-
     }
 
     // if password changed
@@ -85,13 +86,35 @@ userSchema.methods.getJWTToken = function(){
 
 
 // Compare Password
-userSchema.methods.comparePassword = async function (enteredPassword){
+userSchema.methods.comparePassword = async function(enteredPassword){
     // but the password is hashed then how we will compare - by bcrypt - bcrypt.compareSync() function
     // this is the user schema or the object we created 
-    return bcrypt.compare(enteredPassword,this.password);
+    // await was missing
+    return await bcrypt.compare(enteredPassword,this.password);
 
 }
 
+
+// Generating password reset token
+userSchema.methods.getResetPasswordToken = function(){
+
+    // Generating token
+    const resetToken = crypto.randomBytes(20).toString("hex");
+
+    // the crypto basic needed
+
+
+    // Hashing and adding to userSchema - the reset password and the password expire are in the user schema
+    this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    // validation of the reset password code generated - the otp thing
+    this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+
+
+    return resetToken;
+    // now we will send the mail to the user for the reset password - using nodemailer
+    // we will send this resetToken to the mail and anyone who clicks on the link can reset the password
+}
 
 
 

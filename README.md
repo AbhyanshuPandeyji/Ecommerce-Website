@@ -520,3 +520,106 @@ token is our json web token which is going to save in the cookie
 - first we will apply it to the register user
 
 ### Login User - Sign In
+
+- it will be hit on the api - (/api/v1/user/login)
+- taking email and password from req.body
+- checking if email and password anyone is didn't putted in 
+- if both are entered checking if the email exist - then finding if the user with these email and password exists if not then error of invalid email or password not directly giving the error its safe to not fall for the random email hitters
+- then if email exists then checking that the password is correct or not by comparing using bcrypt the method we used to save the password by hashing it.
+- then if it exists then give the user the token by which he will be logged in on the specific browser and also don't have to login again and again as he has the token - but it will have a expire limit so user have to login again after some time 
+
+
+
+### Different functions that been created during the process of login and sign up
+
+## Hashing password 
+
+- for this we will use the bcrypt to hash the password - bcrypt.hash()
+- will be in the user model schema - userModel.js file
+- it will check before saving the password to the database 
+- first there will be a function created which will take a save statement and a function wih the argument next. 
+- first it will check if the password is been modified if not then it will just go to the next step  by applying the next() in the function- this will be useful in the case of the profile is exists and we just want to update it without updating the password 
+- now if the password don't exists ( hence the profile ) it will take the password and hash it - if the password do exists but been changed then it will also rehash it so the new password wil be saved 
+- it will work whenever this function is going to run - means whenever the user data is been added or been updated - and it will decide the case depended on that 
+eg in case of register and login 
+
+
+## Taking JWT Token
+
+- we will use the package "jsonwebtoken" and "cookie-parser" here.
+- first same it will take the "userSchema" object 
+- then it will run the methods function 
+- in this case we will use to get the jwt token - getJWTToken ( its the function it will be called in the authorization process whenever its needed - usually when every condition before is satisfied to give the entered user access )
+- then it will return the token by "jwt.sign()" function in it there will be id of the user followed by the secret jwt token key (given by the website for specific user) with the following function which define after how long user has to login again the expiration date
+- this will save the jwt token in the cookies of the browser - it will use "cookie-parser" to read the jwt cookie and save it
+
+## For comparing the Password 
+
+- we will use the package bcrypt here 
+- first same we create the function which will take and give back data to our user schema object - "userSchema" to work with 
+- it will be an async function with an argument which it will take from the function its being called and that argument will be the password we want to compare to the existing one in the data base
+- then it will compare it by the bcrypt compare ( bcrypt.compare()) where it will take two arguments  
+  first one is the password is been entered by the user
+  and second one that been present in the data base related to the specific id which will be taken by the user schema object in the model
+```
+    return await bcrypt.compare(enteredPassword,this.password);
+
+    enterPassword is the password entered by the user in real time
+    in here "this" is our userSchema object and the data stored in it 
+    "this" is a keyword which take the specific key and perform action on it 
+```
+- if it matches it will give the user the access to the specific authorization that been defined if not then it will throw the error of not matched
+
+#### Authentication 
+
+- cookie will be used 
+- need to go to app.js and use the cookie-parser in it- import the cookie parser then app.use cookie parser.
+- create an auth.js file in the middleware
+- in auth.js create a function that takes the req,res,next
+- then take the cookie from the browser which is been saved and then use it to validate the user authorization - <b>remember its different than the twitter one in the syntactical side but its same in case of requirements and works</b>
+
+
+
+### The Admin route 
+- in the auth.js file 
+- if the role in the user data in mongodb includes the role we provided ("admin") by the function authorizeRoles then the next step of accessing the authorized routes by the admin ( admin can access the site as well as can manipulate the data in hte site not the users data - but the data of the site like product creation , delete and update) 
+- if not then the user will get a error response of un authorization and status code of 403 for refusal of the response from the side of the server
+
+
+### to save the name of the user that created product
+- in the product model we also include a key called "user" which will store the the id of the user who created the product so if there is more than one admin they don't get confused that who created the product 
+- 
+```
+user:{
+        type:mongoose.Schema.ObjectId,
+        ref:"User",
+        required:true,
+    },
+```
+
+- whenever the product will be created it will store the id of the user from the mongodb of the user who created it and the id will come from the id we saved earlier
+in the cookie
+
+
+### to Reset password 
+
+- import crypto  - crypto = require("crypto") - it doesn't require installization it comes pre build
+- crypto basic
+ token  = crypto.randomBytes(20) - creates random buffer bytes <Buffer 1 2 4j 7t ...> like this</Buffer>
+ .toString() - will create some random un readable symbols 
+ then adding hex to it will create some readable string of the number 
+ this is all to create space in the storage to take the new password
+
+- then next step will be to update it 
+ this is done by taking the password that is been taken from the user id and then updating it we will use the algorithm in it named "sha256" - there are many algorithm but we are using it
+- then crypto.createHash("sha256")
+then .update(token) the token we taken earlier of the user 
+.digest("hex') to take the readable token data instead of an object and the hex in it is represent the data in the string form 
+- hex it converts the hexadecimal data into the string data
+
+
+
+### Forgot password 
+- it works 
+- the mail works needs extra step that is email and the device verification with the name 
+the password will come from the gmail id -> gmail -> manage accounts -> then security -> then login with google -> then on the two step verification -> then open then app passwords and add the name any to it after login and generate password and copy that password and paste it to your password section of mail sending in the config file of the email ( after the email you want to send from or the email you did the two step verification to ) 
