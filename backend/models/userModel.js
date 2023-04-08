@@ -86,11 +86,11 @@ userSchema.methods.getJWTToken = function(){
 
 
 // Compare Password
-userSchema.methods.comparePassword = async function(enteredPassword){
+userSchema.methods.comparePassword = async function(password){
     // but the password is hashed then how we will compare - by bcrypt - bcrypt.compareSync() function
     // this is the user schema or the object we created 
     // await was missing
-    return await bcrypt.compare(enteredPassword,this.password);
+    return await bcrypt.compare(password,this.password);
 
 }
 

@@ -527,7 +527,7 @@ token is our json web token which is going to save in the cookie
 - if both are entered checking if the email exist - then finding if the user with these email and password exists if not then error of invalid email or password not directly giving the error its safe to not fall for the random email hitters
 - then if email exists then checking that the password is correct or not by comparing using bcrypt the method we used to save the password by hashing it.
 - then if it exists then give the user the token by which he will be logged in on the specific browser and also don't have to login again and again as he has the token - but it will have a expire limit so user have to login again after some time 
-
+- the await was missing from the user password matching - thats why not logging in 
 
 
 ### Different functions that been created during the process of login and sign up
@@ -623,3 +623,146 @@ then .update(token) the token we taken earlier of the user
 - it works 
 - the mail works needs extra step that is email and the device verification with the name 
 the password will come from the gmail id -> gmail -> manage accounts -> then security -> then login with google -> then on the two step verification -> then open then app passwords and add the name any to it after login and generate password and copy that password and paste it to your password section of mail sending in the config file of the email ( after the email you want to send from or the email you did the two step verification to ) 
+
+
+### how to use the reset password function
+
+- after clicking he reset password we will send an email withe the token 
+- first we will take the hashed token of the user that is save in the resetPasswordToken if user click forgot password 
+- then we will find if the user with the hashed token he provided in the url exist in our database ( to check if the user who got email is clicked the url we send ) -
+if user exist then move to next step if not then give error of user doesn't exist of the token expire 
+- then if the user with the new saved hashed token is find in the database
+then we will take the password input form the user
+- if the password he entered and the confirm password entered is correct then we will proceed if not then send the error of wrong password don't match 
+- if the password match then we will save the password we entered in the in the req.body.password ( the password we entered in the instance of the object password ) will be copied to the user's password data 
+- after that we will make the resetPasswordToken and the Expire time to undefined if steps before done good  - to make room for if the new one request been made
+- then we will save the user's password in the database 
+- then we will give the request to the jwt token to login the user with that saved new password
+
+
+
+
+#### Backend User Routes Api's 
+
+
+### Main aim of features for this section
+- User to Check His Profile
+- Users profile Details
+- Update and Delete his Profile ( update profile and password )
+
+
+
+
+##### Things learn 
+
+- there a difference between json from the user and from the database 
+- user if we take his inputed json data object we take it by the req.body.key but here the no object schema  is required before it here to access it - </br>
+ if we do { name , email } = req.body;
+ here the body is the object input we taking from the user when he input it either by the postman or by the actual front end
+ </br>
+- on the other hand if we say req.body.somekey - this will be the data we taking from the database but for that it will require to be have a defined object schema related to it so we can access it
+</br>
+- for the us to access the body of the database we need the schema object to find the schema and the database linked to it 
+after that we dan create the values in the database by create()
+function </br> - eg in our case the schema object is User
+so User.create({keys,keys,keys}) it will put the value to the keys form the data we input -
+</br>
+but where the data comes from by the user and how we taken it by doing destructuring for taking specific data like-
+</br>
+{name , email , password } - { keys , keys , keys } - in these keys data come from the json object we enter in the api creating the data in the database takes place after we enter the data and the data keys matched the keys we provide in the destructuring part of taking the data in the logic/ code
+</br>
+- after the data been entered and the when the user try to create it in the database and save the schema comes into play and when the data is matched the input type of the data we can take in the schema defined type we take the data -</br>
+and if its unmatched it throws the error so the data we put in the json object in the postman should matched the data type in the schema of the object we provide while taking the json object data values and creating and storing it in the data base </br> 
+- you can change the keys by which the user enter data in the postman and it won't affect tbe database keys even if it don't match you can use the req.body.key  </br>-but that would be a bad practice and will be bad in more complex project and when interacting with the front end so we choose to take the data in the user schema with the same name as the keys we defined in our schema object </br>
+- but thats it the json object enter by the user is different from the object present in the database </br>
+- hence the calling of the function and keys related to the schema object might be look same but they are actually not 
+</br>
+json object body calling for the user input is different and the json object body of the object schema is different one is getting the data and another one is working on the already presented data , both looks similar kind of request
+```
+req.body 
+
+but body of the user input 
+and the body of the mongodb data are totally different 
+
+```
+- thats why even if you see some keys request that are not present in your object schema you defined then realize that that key or the body request is related to the user input in the real time not from the already presented data
+
+- and the further checks or the logic performed on them is totally different things they dont hanve to match the keys present in the data base they only have to match the data value stored in the keys in the specific data base to work through and go to the next step of the logic
+
+- you can compare the data of the objects wihout having the same key because 
+```
+
+</br>
+you are not finding the key located data </br>
+you are not finding the or matching the key </br>
+you are matching the data and </br>
+the checking key should not have to be same to the key in your </br> data base to match the value in the key of your data base
+</br>
+
+</br>
+you have to match the data in the logic not the key name 
+until you are taking in the data by the user on that key 
+then the keys by which user entered the data like : </br>
+    json object inputed in the postman 
+    it is done in the real time and on an api
+    {"name":"abhy"}
+
+</br>
+inhere the key is name 
+should match the key you asked for in body request - by req.body
+</br>
+when you take in the data to the logical part of the function 
+</br>
+eg
+{ name } = req.body - in hare the name should match the name key in the above mentioned  in the object inputed on the api of the url to take the data
+</br>
+```   
+
+- another thing is the logical part of an api is a part which runs when the api is hitted so if you didn't hit it then it will not take the logic 
+- the api you enter in the postman and the api with the logic you want to reach should match to data to be taken and action to be performed in you app
+- 
+<strong>Remember the difference between accessing the req.body of the database and the object input in the real time </br>
+when inputting the data the keys should match so the data should go to the specific keyword but it can or cannot match the name of the data base key word it should only be matched the type and in case of validation value also</strong></br>
+<strong> remember the api hit match the url you want to enter the data and the logic just the next step if the api matched and the logic will only be performed if the required condition int eh logic will matched if not it will throw the error </strong></br>
+<strong>Remember to put the await before the password compare and user intake even if the function it will go to compare the password has the await before the password because it will still take time to compare the password for the computer it wont do it in the real time without any delay </br>
+so even if the function is directly comparing in front like-
+
+```
+put await in front of the every async task
+put await that take time to work in bits or pieces 
+Put await before every access and compare tasks 
+
+
+isMatched = await bcrypt.compare( given password , database,password)
+
+or the indirect function 
+isMatched = await checkPassword(Password)
+
+in this case password is send back to the function which holds the bcrypt function with await and return the response 
+eg
+
+userSchema.methods.comparePassword = async function(password){
+    // but the password is hashed then how we will compare - by bcrypt - bcrypt.compareSync() function
+    // this is the user schema or the object we created 
+    // await was missing
+    return await bcrypt.compare(password,this.password);
+
+}
+
+in here it is comparing the password and returning the response
+
+
+and also remember to put await in front of the data you want to access from the data base no matter what 
+
+const user =await User.find();
+
+this takes time to get so function to work we need to put the await otherwise it will not perform the logic that is next and if the next logic will be in front statically then it will skip this step and give the response because the next stepped run before this could got time to finish
+
+
+```
+</strong></br>
+<strong> Await is always is used to delay the task so the next task only performs if the first task is complete and it is completed right - it won't just start by it set the next step that can cause error because of insufficient data required to perform the right logic based on values that should been provided before the next logical statement could run </strong></br>
+<strong>Async Await is also used when we want to display or perform a logic in bits rather than the all at once once if we put async it will run every thing in bit every bit of logic complete if will put out an result </br>
+and the await if we want a logic to be run before something of the next step so it takes the data from the above logic 
+or the next statement in the logical code is dependent upon the completion of the value of the code line above we put</br> the await to tell the computer to wait for the above task to finish then the next line of code only runs otherwise not </strong></br>
+<strong></strong>
