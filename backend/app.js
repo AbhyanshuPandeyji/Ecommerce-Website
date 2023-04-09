@@ -13,11 +13,16 @@ app.use(cookieParser());
 // for better readability can use userRoute and productRoute for good referencing
 const product = require("./routes/productRoute");
 
+// For the User Route
 const user = require("./routes/userRoute");
+
+// For the Order Route
+const order = require("./routes/orderRoute");
 
 // Using routes
 app.use('/api/v1', product);
 app.use('/api/v1', user);
+app.use('/api/v1', order);
 
 // Middle ware for error
 app.use(errorMiddleware);

@@ -766,3 +766,72 @@ this takes time to get so function to work we need to put the await otherwise it
 and the await if we want a logic to be run before something of the next step so it takes the data from the above logic 
 or the next statement in the logical code is dependent upon the completion of the value of the code line above we put</br> the await to tell the computer to wait for the above task to finish then the next line of code only runs otherwise not </strong></br>
 <strong></strong>
+
+
+
+
+
+#### Admin Routes now
+
+### add admin to every routes
+- Add the admin in the api url of the every CRUD cases in the product 
+- in create , delete and update product 
+( ' /admin/product/ ) add the admin in every route
+
+
+### Now the admin routes To Do Different Things
+- 4 routes
+- get All Users , On ('/admin/users') to get all users with id in the website
+- get single user , on ('/admin/user/:id') to get a single specific user by its id
+- update user role , on ('/admin/user/:id') to update a user role on the website - toggle between Admin and A regular User
+- Delete User - On ('/admin/user/:id') - to delete a user on the Web site from the database of the website
+
+### things to consider
+
+- don't put req.user.id for finding if you do that it will update the user admin in this case itself instead of the role of the user we want to update role for - for that use "req.params.id" to find the user in the database
+- don't give back the user in response back in the end after deleting the user
+
+
+
+
+#### Some Product Route 
+
+### To Add Review to A Product
+
+- creating the Get 
+
+
+
+### To Get All Products Reviews
+- add the route in the product route - ("/reviews") this will be get request
+- then in the getProductReviews 
+- take the product by the query string - req.query.productId - because we just want to find the product to work on it not the whole product data so we just need the id to get the product when we reach to the url and the query will hold the id of the product on reach
+- when reach to it find all the reviews in in it and show it -
+by saving the find products data in an variable and then send the response of the product.reviews to show all the reviews the product have
+
+
+### Delete a Product review
+- add the route in the product route - ("/reviews") this will be delete request
+- this route will be authenticated so the user can only delete his reviews, the user have to be logged in to delete the review
+- take the product by finding it in query string 
+```
+    const product = await Product.findById(req.query.id); 
+```
+- then filter the products reviews related to the id of the user and the id provided in the req.query
+the id of the product should match the id of the reviews in it 
+
+- then filter the all that are not true and output it 
+- before the output we need to re-average the rating so do that 
+- then add that new average into the product reviews and rating by finding and updating the contents in the products reviews
+
+
+
+
+#### Order Section Of the Backend
+
+### Order Model
+will write it later
+- order model
+- order controller
+- order routes
+- order api tests

@@ -256,4 +256,130 @@ exports.updatePassword = catchAsyncErrors( async(req,res,next)=>{
 );
 
 
-// 
+//Update Profile of the User 
+exports.updateProfile = catchAsyncErrors( async(req,res,next)=>{
+
+    // taking the data input form the user in key value form - it is different from the destructuring type of intake
+    const newUserData = { 
+        name:req.body.name,
+        email:req.body.email,
+    }
+
+    // above we take the data based on which we want to update
+    // we will add cloudinary later
+
+    // take id to check the update based on the new user data to match it with the id and then the options based on it
+    const user = await User.findByIdAndUpdate(req.user.id,newUserData,{
+        // new decide the validation of intake the new data into the object 
+        new:true,
+
+        runValidators:true,
+        useFindAndModify: false,
+
+    });
+
+
+    res.status(200).json({
+        success:true,
+        user, 
+    });
+
+}); 
+
+
+
+
+
+// The Admin Routes
+
+// Get All Users (admin) - by the admin to check no of users who have the id on the website
+exports.getAllUsers = catchAsyncErrors( async(req,res,next)=>{
+
+    const users = await User.find();
+
+    res.status(200).json({
+        success:true,
+        users,
+    });
+
+});
+
+// Get Single User Detail  (admin) - by the admin to check no of users who have the id on the website
+exports.getSingleUser = catchAsyncErrors( async(req,res,next)=>{
+
+    // we use params to find here because we are not looking form the data base but from the url based if 
+    // we go to the specific url to see the id after their profile to find them 
+    const user = await User.findById(req.params.id);
+
+    if(!user){
+        return next(new ErrorHandler(`User does not exists with Id: ${req.params.id} `, 400));
+    }
+
+    res.status(200).json({
+        success:true,
+        user,
+    });
+
+});
+
+
+// Update User Role (admin)
+exports.updateUserRole = catchAsyncErrors( async(req,res,next)=>{
+
+    // taking the data input form the user in key value form - it is different from the destructuring type of intake
+    const newUserData = { 
+        name:req.body.name,
+        email:req.body.email,
+        role:req.body.role,
+
+    }
+
+    // we won't be able to change the name and email of the other users but we will take the user based on it and check it
+
+
+    // take id to check the update based on the new user data to match it with the id and then the options based on it
+    // have to be req.params.id otherwise user admin will update itself in the data base
+    const user = await User.findByIdAndUpdate(req.params.id,newUserData,{
+        // new decide the validation of intake the new data into the object 
+        new:true,
+        runValidators:true,
+        useFindAndModify: false,
+
+    });
+
+    if(!user){
+        return next(new ErrorHandler(`User does not exists with Id: ${req.params.id} `, 400));
+    }
+
+
+    res.status(200).json({
+        success:true,
+        user, 
+    });
+
+});
+
+
+// Delete User (admin)
+exports.deleteUserProfile = catchAsyncErrors( async(req,res,next)=>{
+
+
+    // we will delete profile pic uploaded by couldinary later
+
+
+    // if we use req.user.id here it will update the admin himself - so level of the selection also matters 
+    const user = User.findById(req.params.id);
+
+    if(!user){
+        return next(new ErrorHandler(`User does not exists with Id: ${req.params.id} `, 400));
+    }
+
+    await user.deleteOne();
+
+    res.status(200).json({
+        success:true,
+        message:`User Deleted Successfully`
+    });
+
+}); 
+
