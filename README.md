@@ -835,3 +835,96 @@ will write it later
 - order controller
 - order routes
 - order api tests
+
+
+
+
+#### ---------------- Backend 90% Ends Here Only Payment and Picture Upload Is Remaining --------------- ####
+
+
+
+
+
+
+- <h1>After  The 4:45 Hour Mark</h1>
+
+##### FRONT END START HERE #####
+
+#### Create The App 
+
+### to install the app
+
+- cd frontend - to enter into frontend folder -
+- npx create-react-app . - to create the react app with the same name as the folder in 
+- then install the app
+- npm start to check the app running status
+- to installing packages on the different devices you need to
+for backend install use -  "npm install" command in root folder
+
+for frontend install use - cd frontend - to go to the app folder
+then - npm install - to install all required dependencies required in the frontend folder
+
+- the npm install checks the folder with the dependencies the package.json and package-lock.json to decide which dependencies is required to run this app 
+its simple
+
+
+### Installing required packages for the future use
+ 
+- for that use npm i package name - you can do it individually or together with the 
+space between package name
+- <b> npm i </b>
+- <b> axios</b> - to make api calls between frontend and backend server
+- <b> react-alert </b> -
+- <b> react-alert-template-basic </b> - 
+        ```
+        to install the react alert 
+        the react alert will not upgraded to work with the newer versions of the
+        react app so we need to download it with for the legacy version of the package
+        npm i react-alert --legacy-peer-deps 
+        npm i react-alert-template-basic --legacy-peer-deps
+        ```
+--legacy-peer-deps helps us to install the packages which is compatible to the older version of the react app
+--force can also be used to install the packages if that above did not work for you
+
+- <b> react-helmet </b> - for different page to have different title 
+- <b> redux </b> - front end state manager
+- <b> react-redux </b> - state management for the react - extension to the redux
+- <b> redux-thunk </b> - to have dispatcher to give action and have a function in the return instead of an action
+- <b> redux-devtools-extension </b> - for work with the redux with the browser seamlessly - gives an external window to see the functionality happening in the within the browser window with the help of the redux state management
+- <b> react-router-dom </b> - to have the routing for faster shifts to the pages - taking full advantage of SPA ( Single Page Application System of the React )
+- <b> overlay-navbar </b>- to have navbar and shifts the pages down
+
+- <b> redux-persist </b> - for just the redux local storage ( don't know why installing this )
+here's its its definition by the site-
+```
+Redux Persist is a tool used to seamlessly save the application's Redux state object to AsyncStorage . On app launch, Redux Persist retrieves this persisted state and saves it back to Redux. Normally, Redux sets the initial state of your app upon launch.
+```
+- there will be more packages that will come later these are for right now
+
+
+
+#### IN File
+
+### Deleting Unnecessary And Unwanted Files And Stuff
+- for removing the cluster fo file removing some pre build files
+- files:
+   <h2>From the Source Folder: frontend/src/</h2>
+-   <b>App.test.js</b>
+-   <b>index.css</b>
+-   <b>logo.svg</b>
+-   <b>reportWebVitals.js</b> - remove the web vitals import and the function from the index.js folder.
+-   <b>setupTests.js</b>
+-   <b></b>
+ 
+- content:
+
+   <h2>Form the Source Folder: frontend/src/</h2>
+-   <b>App.js</b> - remove pre build code in return - removing logo.svg import 
+-   <b>App.css</b> - removing whole pre build styling
+-   <b>index.js</b> - removing WebVitals function call - removing WebVital import - removing index.css import
+    <b></b>
+    
+    <h2>From the Public folder: frontend/public/</h2>
+-   <b>index.html</b> - removing the pre comments 
+
+- its not an overlay error its a reference error
