@@ -26,11 +26,12 @@ exports.createProduct = catchAsyncErrors(
 // Get All Products --
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 
+    
     // for Pagination 
-    const resultPerPage = 5;
+    const resultPerPage = 8;
 
     // for front end to show how many products are available
-    const productCount = await Product.countDocuments();
+    const productsCount = await Product.countDocuments();
     
     // For filter features
     const apiFeature = new ApiFeatures(Product.find() , req.query).search().filter().pagination(resultPerPage); // calling the function to of the search
@@ -45,7 +46,7 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
         success: true, 
         products,
-        productCount,
+        productsCount,
     });
 
 
@@ -53,6 +54,7 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 
 // Get Product Details - Of One
 exports.getProductDetails = catchAsyncErrors( async (req, res, next) => {
+
 
     // to get product
     const product = await Product.findById(req.params.id);
@@ -66,7 +68,7 @@ exports.getProductDetails = catchAsyncErrors( async (req, res, next) => {
 
     res.status(200).json({
         success: true, 
-        product
+        product,
     });
 
 });
