@@ -68,3 +68,13 @@ and the css file
 - install material ui carosel package 
 - install material ui icons 
 - install material ui cors - cannot install for me
+
+
+#### Search Works
+- use the use navigate instead of the history to navigate to the pages its is 
+useNavigate from react router dom 
+navigate = useNavigate;
+
+
+
+npm i express-fileupload and couldinary

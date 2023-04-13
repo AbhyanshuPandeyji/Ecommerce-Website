@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react'
-import Carousel from 'react-material-ui-carousel';
+// import Carousel from 'react-material-ui-carousel';
 import {Fragment} from 'react';
 import './ProductDetails.css'
 import Loader from '../layout/Loader/Loader.js'
+import MetaData from '../layout/MetaData.js'
 
 // this is to work with the image url in the function instead of params - match.params.id instead - import useParams and create an id
 import {useParams} from 'react-router-dom'
@@ -75,6 +76,8 @@ const ProductDetails = () => {
             loading ? (
                 <Loader/>) : (
                 <Fragment>
+                    <MetaData title={`${product.name} -- E-commerce`}/>
+
                     <div className='ProductDetails'>
                         {/* we will use material ui carousel */}
 
@@ -165,7 +168,7 @@ const ProductDetails = () => {
                         <div className='reviews'>
                             {
                             product.reviews && product.reviews.map((review) => (
-                                <ReviewCard review={review} key={product.reviews}/>
+                                <ReviewCard review={review} key={review._id}/>
                             ))
                         } </div>
 
