@@ -6,6 +6,7 @@ const ApiFeatures = require("../utils/addFeatures");
 
 
 
+
 // Create Product -- Admin route ( Only Admin will access it will be implemented later)
 exports.createProduct = catchAsyncErrors(
     async (req, res, next) => {
@@ -34,12 +35,29 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     const productsCount = await Product.countDocuments();
     
     // For filter features
-    const apiFeature = new ApiFeatures(Product.find() , req.query).search().filter().pagination(resultPerPage); // calling the function to of the search
+    const apiFeature = new ApiFeatures(Product.find() , req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage); // calling the function to of the search
 
-    
-    // to get all products
-    // Product.find() now we can't use it again it will be mess
-    // so we use apiFeature.query we got from the search
+
+    // let products = await apiFeature.query;
+
+    // let filteredProductsCount = products.length;
+
+
+    // apiFeature.pagination(resultPerPage);
+
+    // products = await apiFeature.query;  
+
+    // before applying pagination to show only when products are fully need
+    // let products = await apiFeature.query;
+    // let filteredProductsCount = products.length;
+
+    // apiFeature.pagination(resultPerPage);
+    // // to get all products
+    // // Product.find() now we can't use it again it will be mess
+    // // so we use apiFeature.query we got from the search
     const products = await apiFeature.query;  
 
     // products coming from above
@@ -47,6 +65,8 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
         success: true, 
         products,
         productsCount,
+        resultPerPage,
+        // filteredProductsCount, 
     });
 
 

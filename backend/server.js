@@ -1,8 +1,12 @@
 const app = require("./app");
 
 const dotenv = require("dotenv");
+
+const cloudinary = require("cloudinary"); 
+
 // database acquirement 
 const connectDatabase = require("./config/database");
+
 
 
 // Handling Uncaught Exception 
@@ -23,6 +27,18 @@ dotenv.config({path:"backend/config/config.env"});
 // this should be done after process .env file 
 // connect to database
 connectDatabase();
+
+
+// image upload connection - fire base can be used
+
+cloudinary.config({
+
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+
+});
+
 
 
 // storing it into the server named variable

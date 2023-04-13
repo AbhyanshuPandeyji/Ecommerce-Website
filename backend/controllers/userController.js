@@ -9,10 +9,20 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail.js");
 
+// for image upload
+const cloudinary = require("cloudinary");
+
+
 
 
 // Register A User - Sign Up Feature -  this is a different method than before verification will be done by outside
 exports.registerUser = catchAsyncErrors( async(req,res,next)=>{
+
+    const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar,{
+        folder: "avatars",
+        width: 150,
+        crop:"scale",
+    });
 
     const {name,email,password} = req.body;
 
@@ -20,10 +30,12 @@ exports.registerUser = catchAsyncErrors( async(req,res,next)=>{
         name,email,password,
        // we will implement it later after our backend 80-90% complete and we made our frontend
        // so when we will implement the photo upload in front end we will do it then 
+        
+       // make sure in your media library will have the folder name the avatars
         avatar:{
             // these are temporary
-            public_id: "This Is A Sample Id",
-            url: "Profile Pic Url"
+            public_id:myCloud.public_id,
+            url: myCloud.secure_url,
         },
     });
 

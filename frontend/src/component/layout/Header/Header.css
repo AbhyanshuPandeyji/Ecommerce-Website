@@ -1,0 +1,63 @@
+:root{
+    --navbar-active-color: white;
+}
+
+.navbar{
+    background-color: black;
+    color: white;
+}
+
+.nav-item{
+    background-color: black;
+    color: white;
+    
+}
+
+.texts {
+    color: white;
+    font: 300 1vmax "Roboto";
+    padding: 0.5vmax;
+}
+.texts:hover {
+    background-color: white;
+    font: 300 1.2vmax "Roboto";
+    transition: all 0.3s;
+}
+.texts:active{
+    color: white;
+}
+
+.nav-link,.nav-link::before ,.nav-link::after{
+    color: white;
+}
+.searchBox > input[type="text"]{
+    margin: 0 1vmax;
+    box-shadow: 0 0 5px rgba( 0 ,0, 0, 0.2);
+    border: none;
+    color: rgba( 0 ,0, 0, 0.7);
+    padding: 0.5vmax 0.5vmax;
+    outline: none;
+    border-radius: 0%;
+    font: 100 1vmax cursive;
+    box-sizing: border-box;
+}
+
+.searchBox > button[type="submit"]{
+    box-shadow: 0 0 5px rgba( 0 ,0, 0, 0.2);
+    background-color: tomato;
+    border: none;
+    color: rgba( 0 ,0, 0, 0.7);
+    padding: 0.5vmax 0.5vmax;
+    outline: none;
+    border-radius: 0%;
+    font: 100 1vmax "Roboto";
+    color: white;
+    transition: all 0.5s;
+}
+
+.searchBox > button[type="submit"]:hover{
+
+    font-size: 1.1vmax;
+    background-color: white;
+    color: tomato;
+}

@@ -25,8 +25,9 @@ export const productReducer = (state = {products: []}, action) => {
                 loading: false,
                 // payload data will be defined in the action file - what kind of data wil be taken
                 products: action.payload.products,
-                productsCount: action.payload.productsCount
-
+                productsCount: action.payload.productsCount,
+                resultPerPage:action.payload.resultPerPage,
+                // filteredProductsCount:action.payload.filteredProductsCount,
             };
 
         case ALL_PRODUCT_FAIL:
