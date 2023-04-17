@@ -1,36 +1,63 @@
-// this is our file which will store the states
-
-import { createStore , combineReducers ,applyMiddleware} from 'redux';
-
-
-// use for the dispatch function
+import {createStore, combineReducers, applyMiddleware} from "redux";
 import thunk from "redux-thunk";
+import {composeWithDevTools} from "redux-devtools-extension";
+import {
+    newProductReducer,
+    newReviewReducer,
+    productDetailsReducer,
+    productReducer,
+    productReviewsReducer,
+    productsReducer,
+    reviewReducer
+} from "./reducers/productReducer";
 
-// 
-import { composeWithDevTools } from "redux-devtools-extension";
-import { productReducer ,productDetailsReducer } from './reducers/productReducer.js';
-import { userReducer } from './reducers/userReducer.js';
+import {
+    allUsersReducer,
+    forgotPasswordReducer,
+    profileReducer,
+    userDetailsReducer,
+    userReducer
+} from "./reducers/userReducer";
 
+import {cartReducer} from "./reducers/cartReducer";
+// import {
+//     allOrdersReducer,
+//     myOrdersReducer,
+//     newOrderReducer,
+//     orderDetailsReducer,
+//     orderReducer
+// } from "./reducers/orderReducer";
 
-
-// this is to combine our different reducers file together
 const reducer = combineReducers({
-
-    products:productReducer,
-    productDetails:productDetailsReducer, 
-    user:userReducer,
+    products: productsReducer,
+    productDetails: productDetailsReducer,
+    user: userReducer,
+    profile: profileReducer,
+    forgotPassword: forgotPasswordReducer,
+    cart: cartReducer,
+    // newOrder: newOrderReducer,
+    // myOrders: myOrdersReducer,
+    // orderDetails: orderDetailsReducer,
+    // newReview: newReviewReducer,
+    // newProduct: newProductReducer,
+    // product: productReducer,
+    // allOrders: allOrdersReducer,
+    // order: orderReducer,
+    // allUsers: allUsersReducer,
+    // userDetails: userDetailsReducer,
+    // productReviews: productReviewsReducer,
+    // review: reviewReducer
 });
 
 let initialState = {
-
+    cart: {
+        cartItems: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [],
+        shippingInfo: localStorage.getItem("shippingInfo") ? JSON.parse(localStorage.getItem("shippingInfo")) : {}
+    }
 };
 
 const middleware = [thunk];
 
-
-// we give the type of reducer how we fetch the data and work with it
-const store = createStore(reducer,initialState,composeWithDevTools(applyMiddleware(...middleware)));
-
-
+const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(... middleware)));
 
 export default store;

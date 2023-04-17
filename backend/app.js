@@ -3,7 +3,9 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 
-const fileUpload = require("express-fileupload")
+const fileUpload = require("express-fileupload");
+
+const path = require("path")
 
 // error middleware import 
 const errorMiddleware = require('./middleware/error')
@@ -28,6 +30,17 @@ const order = require("./routes/orderRoute");
 app.use('/api/v1', product);
 app.use('/api/v1', user);
 app.use('/api/v1', order);
+
+// to take the whole build
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+// to get data by rendering on any url of our website - it will run even if the frontend is closed
+// type local host 4000
+app.get("*" , (req,res)=>{
+    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"))
+})
+
+
 
 // Middle ware for error
 app.use(errorMiddleware);

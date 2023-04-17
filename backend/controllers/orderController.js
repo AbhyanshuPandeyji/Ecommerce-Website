@@ -127,11 +127,14 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     // we need to decrease the quantity of the product in our stock as we create an order
     // and this will  be when the order is delivered not when its not been delivered -
     // because if someone place order and then cancel  the order then we don't have the product out of stock without  it ever being delivered
-    order.orderItems.forEach(async(orderObj)=>{
+    // this is to fix the bug of lowering the stock when delivering -  only need to lower the stock when shipped
+    if(req.body.status === "Shipped"){
+        order.orderItems.forEach(async(orderObj)=>{
 
-        // this function will run and update the stock quantity of the product
-        await updateStock(orderObj.product,orderObj.quantity);
-    })
+            // this function will run and update the stock quantity of the product
+            await updateStock(orderObj.product,orderObj.quantity);
+        })
+    }
 
     order.orderStatus = req.body.status;
 

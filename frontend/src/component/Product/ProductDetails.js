@@ -4,7 +4,8 @@ import {Fragment} from 'react';
 import './ProductDetails.css'
 import Loader from '../layout/Loader/Loader.js'
 import MetaData from '../layout/MetaData.js'
-
+// import { Slide } from '@mui/material';
+import Carousel from 'react-material-ui-carousel'
 // this is to work with the image url in the function instead of params - match.params.id instead - import useParams and create an id
 import {useParams} from 'react-router-dom'
 
@@ -12,6 +13,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import {clearErrors, getProductDetails} from '../../actions/productAction';
 
 import ReactStars from 'react-rating-stars-component';
+import { Rating } from '@mui/material';
 
 import ReviewCard from './ReviewCard.js'
 
@@ -82,7 +84,8 @@ const ProductDetails = () => {
                         {/* we will use material ui carousel */}
 
                         <div> {/* just remove if sliding does not works */}
-                            {/* <Carousel> */}
+                            <Carousel className='carouselItem'>
+                            {/* <Slide> */}
                             {
                             product.images && product.images.map((item, i) => (
                                 <img className='CarouselImage'
@@ -95,7 +98,9 @@ const ProductDetails = () => {
                                     }/>
                             ))
                         }
-                            {/* </Carousel>  */}
+                        {/* </Slide> */}
+                            </Carousel> 
+                        
                             </div>
                         <div>
                             <div className='detailsBlock-1'>

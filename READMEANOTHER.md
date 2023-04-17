@@ -78,3 +78,22 @@ navigate = useNavigate;
 
 
 npm i express-fileupload and couldinary
+
+
+#### Login , REgister ,Logout works
+- all login logout and register works only their routing to the pages required which is profile page is remaining
+
+
+#### forgot , reset , profile update works 
+- just need to copy paste the all file styles and the components required 
+- for forgot password the temporary frontend url will be provided but at the upload the both url of frontend and the backend wil be together with the port
+
+- the profile page is need to be created (learned ) and managed 
+
+- 9:48 hr complete fast the pace
+
+- the toastify can work as a single function like alert 
+- the protected route is the component to use for not writing the isAuthenticated for every route that should only be accessed by the user who login only 
+- the dashboard wil only be accessed by the admin only 
+
+- this is till now the data 14-4-23

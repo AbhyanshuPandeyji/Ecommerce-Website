@@ -5,20 +5,17 @@ import { Link } from "react-router-dom";
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FaceIcon from '@mui/icons-material/Face';
-// import FaceIcon from "@material-ui/icons/Face";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction";
-// import { useAlert } from "react-alert";
 
 import { useNavigate } from "react-router-dom";
 
 import { ToastContainer , toast } from 'react-toastify';
 
 
-const LoginSignUp = ({ history, location }) => {
+const LoginSignUp = ({ location }) => {
 
   const dispatch = useDispatch();
-  // const alert = useAlert();
 
   // initializing the navigation
   const navigate = useNavigate();
@@ -46,10 +43,11 @@ const LoginSignUp = ({ history, location }) => {
 
 
   // to get the image files from the user 
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState("/Profile.png");
   // this is a small view of how the pic will look like
   const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
 
+  // to login user
   const loginSubmit = (e) => {
     e.preventDefault();
     // console.log("submit Login");
@@ -57,6 +55,7 @@ const LoginSignUp = ({ history, location }) => {
     dispatch(login(loginEmail, loginPassword));
   };
 
+  // to register user
   const registerSubmit = (e) => {
     // console.log("Register Submit");
   
@@ -76,7 +75,7 @@ const LoginSignUp = ({ history, location }) => {
 
   // this is to get and set the dta of the input given by the user
   const registerDataChange = (e) => {
-    console.log("register email")
+    // console.log("register email")
   
     // we have to do it differently if there is image or not
     if (e.target.name === "avatar") {
@@ -103,29 +102,22 @@ const LoginSignUp = ({ history, location }) => {
 
 
   // this part will be a problem
-  // const redirect = locatio n.search ? location.search.split("=")[1] : "/account";
+  // const redirect = location.search ? location.search.split("=")[1] : "/account";
 
-  const errorAlert = (error) => {
-    toast.error("How Awesome",{
-        position:"bottom-center"
-    });
-}
+
 
   useEffect(() => {
     if (error) {
-      errorAlert();
+      toast.error(error);
       dispatch(clearErrors());
     }
 
     if (isAuthenticated) {
-      navigate("/account")
+      navigate("/account");
+    if(user!=="null")
+    toast.success("login successful");
     }
-  }, 
-  [
-    dispatch, 
-    error,
-    history, 
-    isAuthenticated, 
+  }, [dispatch, error , toast , isAuthenticated, 
     // redirect
   ]);
 
@@ -141,7 +133,6 @@ const LoginSignUp = ({ history, location }) => {
       switcherTab.current.classList.add("shiftToRight");
       switcherTab.current.classList.remove("shiftToNeutral");
 
-      // don't know how this part works
       registerTab.current.classList.add("shiftToNeutralForm");
       loginTab.current.classList.add("shiftToLeft");
     }
@@ -199,7 +190,7 @@ const LoginSignUp = ({ history, location }) => {
                     placeholder="Name"
                     required
                     name="name"
-                    // value={name}
+                    value={name}
                     onChange={registerDataChange}
                   />
                 </div>
@@ -210,7 +201,7 @@ const LoginSignUp = ({ history, location }) => {
                     placeholder="Email"
                     required
                     name="email"
-                    // value={email}
+                    value={email}
                     onChange={registerDataChange}
                   />
                 </div>
@@ -221,13 +212,13 @@ const LoginSignUp = ({ history, location }) => {
                     placeholder="Password"
                     required
                     name="password"
-                    // value={password}
+                    value={password}
                     onChange={registerDataChange}
                   />
                 </div>
 
                 <div id="registerImage">
-                  {/* <img src={avatarPreview} alt="Avatar Preview" /> */}
+                  <img src={avatarPreview} alt="Avatar Preview" />
                   <input
                     type="file"
                     name="avatar"
@@ -241,7 +232,6 @@ const LoginSignUp = ({ history, location }) => {
           </div>
         </Fragment>
       )}
-          <ToastContainer/>  
     </Fragment>
   );
 };

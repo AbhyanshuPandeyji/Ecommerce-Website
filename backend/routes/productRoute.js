@@ -7,7 +7,8 @@ const {
     getProductDetails,
     createProductReview,
     getProductReviews,
-    deleteProductReview
+    deleteProductReview,
+    getAdminProducts
 } = require('../controllers/productController.js');
 const {isAuthenticatedUser, authorizeRoles} = require('../middleware/auth.js');
 
@@ -32,6 +33,9 @@ router.route("/reviews").delete(isAuthenticatedUser, deleteProductReview );
 
 
 // Admin Routes
+// to get all products - for admin without  any filter
+router.route('/admin/products').get(isAuthenticatedUser , authorizeRoles("admin") , getAdminProducts);
+
 
 // TO create Product - it will require the auth and the admin route
 router.route('/admin/product/new').post(isAuthenticatedUser, authorizeRoles("admin"), createProduct);

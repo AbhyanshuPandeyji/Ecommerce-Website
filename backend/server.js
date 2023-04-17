@@ -1,6 +1,6 @@
 const app = require("./app");
 
-const dotenv = require("dotenv");
+
 
 const cloudinary = require("cloudinary"); 
 
@@ -21,7 +21,13 @@ process.on("uncaughtException",(err)=>{
 
 
 //config - to use variables in env file
-dotenv.config({path:"backend/config/config.env"}); 
+// it will run on local host and on the hosting site it will not 
+if(process.env.NODE_ENV !== "PRODUCTION"){
+    // when hosting online it won't run we will give the variable in production time to The PRODUCTION variable to check it 
+    // directly importing the env 
+    require('dotenv').config({path:"backend/config/config.env"}); 
+
+}
 
 
 // this should be done after process .env file 

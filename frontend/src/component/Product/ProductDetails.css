@@ -7,7 +7,10 @@
     display: flex;
   }
   
-
+.carouselItem{
+  width: 20vmax;
+  margin: auto;
+}
   .ProductDetails > div {
     width: 100%;
     display: flex;
@@ -287,6 +290,11 @@
     }
     .reviewCardComment {
       font: 300 5vw cursive;
+    }
+
+    .carouselItem{
+      height: 60vmax;
+      margin: auto;
     }
   }
   
