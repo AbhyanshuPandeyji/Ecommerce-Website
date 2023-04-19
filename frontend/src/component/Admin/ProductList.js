@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -7,7 +7,7 @@ import {
   getAdminProduct,
   deleteProduct,
 } from "../../actions/productAction";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { useAlert } from "react-alert";
 import MetaData from "../layout/MetaData";
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,41 +15,49 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from "@mui/material";
 import SideBar from "./Sidebar";
 import { DELETE_PRODUCT_RESET } from "../../constants/productConstants";
+import { ToastContainer, toast } from "react-toastify";
 
-const ProductList = ({ history }) => {
+const ProductList = () => {
   const dispatch = useDispatch();
 
-  const alert = useAlert();
+  const navigate = useNavigate();
 
+
+  // from the products
   const { error, products } = useSelector((state) => state.products);
 
+  // here will be the function to delete the product
   const { error: deleteError, isDeleted } = useSelector(
     (state) => state.product
   );
 
+  // this will  just delete the product by its id
   const deleteProductHandler = (id) => {
     dispatch(deleteProduct(id));
   };
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
 
+    // if error occured
     if (deleteError) {
-      alert.error(deleteError);
+      toast.error(deleteError);
       dispatch(clearErrors());
     }
 
+    // if deleted
     if (isDeleted) {
-      alert.success("Product Deleted Successfully");
-      history.push("/admin/dashboard");
+      toast.success("Product Deleted Successfully");
+      navigate("/admin/dashboard");
+      // to not run again and again 
       dispatch({ type: DELETE_PRODUCT_RESET });
     }
 
     dispatch(getAdminProduct());
-  }, [dispatch, alert, error, deleteError, history, isDeleted]);
+  }, [dispatch, error, deleteError, navigate, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Product ID", minWidth: 200, flex: 0.5 },
@@ -86,13 +94,15 @@ const ProductList = ({ history }) => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/product/${params.getValue(params.id, "id")}`}>
+            {/* this is to go to the product */}
+            <Link to={`/admin/product/${params.id}`}>
+              {/* this is to edit product */}
               <EditIcon />
             </Link>
-
+            {/* this is to delete the product */}
             <Button
               onClick={() =>
-                deleteProductHandler(params.getValue(params.id, "id"))
+                deleteProductHandler(params.id)
               }
             >
               <DeleteIcon />
@@ -105,6 +115,7 @@ const ProductList = ({ history }) => {
 
   const rows = [];
 
+  // for showing all products 
   products &&
     products.forEach((item) => {
       rows.push({
@@ -116,9 +127,11 @@ const ProductList = ({ history }) => {
     });
 
   return (
+    // this is same as the orders page just with side bar
     <Fragment>
       <MetaData title={`ALL PRODUCTS - Admin`} />
 
+      {/* taking the css from the dashboard css */}
       <div className="dashboard">
         <SideBar />
         <div className="productListContainer">

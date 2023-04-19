@@ -1,6 +1,7 @@
 import {createStore, combineReducers, applyMiddleware} from "redux";
 import thunk from "redux-thunk";
 import {composeWithDevTools} from "redux-devtools-extension";
+// this is products reducers
 import {
     newProductReducer,
     newReviewReducer,
@@ -11,6 +12,8 @@ import {
     reviewReducer
 } from "./reducers/productReducer";
 
+
+//this is user reducers
 import {
     allUsersReducer,
     forgotPasswordReducer,
@@ -19,14 +22,17 @@ import {
     userReducer
 } from "./reducers/userReducer";
 
+// this is cart reducer
 import {cartReducer} from "./reducers/cartReducer";
-// import {
-//     allOrdersReducer,
-//     myOrdersReducer,
-//     newOrderReducer,
-//     orderDetailsReducer,
-//     orderReducer
-// } from "./reducers/orderReducer";
+
+// this is order reducers 
+import {
+    allOrdersReducer,
+    myOrdersReducer,
+    newOrderReducer,
+    orderDetailsReducer,
+    orderReducer
+} from "./reducers/orderReducer";
 
 const reducer = combineReducers({
     products: productsReducer,
@@ -35,22 +41,25 @@ const reducer = combineReducers({
     profile: profileReducer,
     forgotPassword: forgotPasswordReducer,
     cart: cartReducer,
-    // newOrder: newOrderReducer,
-    // myOrders: myOrdersReducer,
-    // orderDetails: orderDetailsReducer,
-    // newReview: newReviewReducer,
-    // newProduct: newProductReducer,
-    // product: productReducer,
-    // allOrders: allOrdersReducer,
-    // order: orderReducer,
-    // allUsers: allUsersReducer,
-    // userDetails: userDetailsReducer,
-    // productReviews: productReviewsReducer,
-    // review: reviewReducer
+    newOrder: newOrderReducer,
+    myOrders: myOrdersReducer,
+    orderDetails: orderDetailsReducer,
+    newReview: newReviewReducer,
+    // admin
+    newProduct: newProductReducer,
+    product: productReducer,
+    allOrders: allOrdersReducer,
+    order: orderReducer,
+    allUsers: allUsersReducer,
+    userDetails: userDetailsReducer,
+    productReviews: productReviewsReducer,
+    review: reviewReducer
 });
 
 let initialState = {
     cart: {
+        // if the local storage has cart items - we need to convert the string of carts into the object to check
+        // if the items doesn't exits then empty cart
         cartItems: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [],
         shippingInfo: localStorage.getItem("shippingInfo") ? JSON.parse(localStorage.getItem("shippingInfo")) : {}
     }

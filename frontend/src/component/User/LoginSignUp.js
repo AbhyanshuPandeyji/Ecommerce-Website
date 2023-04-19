@@ -1,7 +1,7 @@
 import React, { Fragment, useRef, useState, useEffect } from "react";
 import "./LoginSignUp.css";
 import Loader from "../layout/Loader/Loader";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FaceIcon from '@mui/icons-material/Face';
@@ -13,16 +13,21 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer , toast } from 'react-toastify';
 
 
-const LoginSignUp = ({ location }) => {
+const LoginSignUp = () => {
 
   const dispatch = useDispatch();
 
   // initializing the navigation
   const navigate = useNavigate();
 
+  const location = useLocation();
+
+  const searchParams = useSearchParams();
+
   const { error, loading, isAuthenticated } = useSelector(
     (state) => state.user
   );
+
 
   const loginTab = useRef(null);
   const registerTab = useRef(null);
@@ -102,6 +107,9 @@ const LoginSignUp = ({ location }) => {
 
 
   // this part will be a problem
+  // to redirect to page of shipping if logged in rather than to the account
+  // it will check the location the = sign - then break it in to two 0 index and 1 index so if we are logged in we need to 
+  // go to the 1 index in short the page link  we provide in the url 
   // const redirect = location.search ? location.search.split("=")[1] : "/account";
 
 
@@ -114,10 +122,12 @@ const LoginSignUp = ({ location }) => {
 
     if (isAuthenticated) {
       navigate("/account");
-    if(user!=="null")
-    toast.success("login successful");
+
+      // problem when checkout the user the success message comes first and then the check of the user
+      if(user!=="null")
+      toast.success("login successful");
     }
-  }, [dispatch, error , toast , isAuthenticated, 
+  }, [dispatch, error , navigate, isAuthenticated, 
     // redirect
   ]);
 

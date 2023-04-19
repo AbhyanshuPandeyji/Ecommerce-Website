@@ -97,3 +97,92 @@ npm i express-fileupload and couldinary
 - the dashboard wil only be accessed by the admin only 
 
 - this is till now the data 14-4-23
+
+
+for data grid another package need to be installed with the x material ui
+
+### shipping page 
+- package needed to be installed 
+### checkout steps the line above to check the completed steps 
+- it takes the active steps and shows the result
+
+### order confirm page 
+- to confirm amount and the quantity and the address of your order before creating it 
+
+### payment 
+- stripe method 
+- go to site create an account 
+- copy the secret key and publishable key - and paste into variable of secret key and the api key 
+- make two file payment controller and route 
+- create the function to create payment in controller and an function to send that key to frontend (because the key is used in frontend payment but we are storing it in backend for the safety)
+- then in the route create 2 route one for making payment and second to give the secret and api key to the front end user on call
+
+- install a package in backend
+```
+npm i stripe
+```
+
+- now go to frontend - install a package
+```
+npm install @stripe/react-stripe-js @stripe/stripe-js
+```
+
+- now use state and take the api key from the backend by a function 
+- call that function in the useEffect 
+getStripeApiKey - to be precise name in the app.js
+
+### stripe works
+stripe works like this in route
+```
+            {stripeApiKey && <Route path='/process/payment' element={<Elements stripe={loadStripe(stripeApiKey)}>
+            // used the payment as the direct element to the elements 
+              <Payment/>
+              </Elements>
+              }>
+                    {/* // <Route element={<Payments/>} path='/process/payment' exact/> */}
+            </Route>}
+
+```
+
+- you need to go step by step to identify the errors you can miss 
+- the error messages is from the order because it was not present in the state
+
+
+#### Orders and Reviews frontend
+
+### To see my orders
+i used the params.id instead of the table reference 
+
+### react rating system is been used by the 
+- dialog of material ui to make the component
+- rating , comment and product id is been given in the form
+- the Rating is been used instead of the react rating
+
+### material ui - Tree View and Items
+- for that new package is been installed
+```
+npm install @mui/lab @mui/material
+```
+the Tree View and Item will be imported by 
+```
+import { TreeView , TreeItem } from '@mui/lab'
+```
+
+### Dashboard 
+- the side bar and main div
+- side bar 1/6 and main 5/6 grid with positions absolute
+- the dashboard will have the three things no of products , orders , users
+- total amount 
+- 2 charts 
+```
+package install
+npm install chart.js react-chart.js-2 
+``` 
+- 1 is line chart - to show the revenue done / total money from zero
+- 2 is donut chart - to show the stock available of the product
+
+- side bar have 4 component 
+dashboard -main
+products which have products and the create one ( with update and  delete )
+orders - to set orders status and see the orders made on the site
+reviews to see the reviews on a product -it will be done by search because there will be many reviews to many products

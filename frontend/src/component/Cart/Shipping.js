@@ -3,19 +3,22 @@ import "./Shipping.css";
 import { useSelector, useDispatch } from "react-redux";
 import { saveShippingInfo } from "../../actions/cartAction";
 import MetaData from "../layout/MetaData";
-import PinDropIcon from "@material-ui/icons/PinDrop";
-import HomeIcon from "@material-ui/icons/Home";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
-import PublicIcon from "@material-ui/icons/Public";
-import PhoneIcon from "@material-ui/icons/Phone";
-import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStation";
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import HomeIcon from "@mui/icons-material/Home";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import PublicIcon from "@mui/icons-material/Public";
+import PhoneIcon from "@mui/icons-material/Phone";
+import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
 import { Country, State } from "country-state-city";
-import { useAlert } from "react-alert";
 import CheckoutSteps from "../Cart/CheckoutSteps";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const Shipping = ({ history }) => {
+const Shipping = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+
+  const navigate = useNavigate();
+
   const { shippingInfo } = useSelector((state) => state.cart);
 
   const [address, setAddress] = useState(shippingInfo.address);
@@ -25,17 +28,21 @@ const Shipping = ({ history }) => {
   const [pinCode, setPinCode] = useState(shippingInfo.pinCode);
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo);
 
+
+  // this is to submit the address and move to next step of confirming the details of the order
   const shippingSubmit = (e) => {
     e.preventDefault();
 
+    // if the number is less than 10 digits or more than it then error
     if (phoneNo.length < 10 || phoneNo.length > 10) {
-      alert.error("Phone Number should be 10 digits Long");
+      toast.error("Phone Number should be 10 digits Long");
       return;
     }
+    // if not  then the info will be dispatch to save as the address for the creating the order
     dispatch(
       saveShippingInfo({ address, city, state, country, pinCode, phoneNo })
     );
-    history.push("/order/confirm");
+    navigate("/order/confirm");
   };
 
   return (
@@ -98,8 +105,10 @@ const Shipping = ({ history }) => {
               />
             </div>
 
+            {/* this is to get the country and state  */}
             <div>
               <PublicIcon />
+
 
               <select
                 required
@@ -115,11 +124,12 @@ const Shipping = ({ history }) => {
                   ))}
               </select>
             </div>
-
+            {/* if country is exist then select the state */}
             {country && (
               <div>
                 <TransferWithinAStationIcon />
 
+              {/* to set value of the state */}
                 <select
                   required
                   value={state}

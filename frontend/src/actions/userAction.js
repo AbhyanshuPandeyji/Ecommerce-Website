@@ -1,36 +1,48 @@
 import {
+    // this is for the user login
     LOGIN_REQUEST,
     LOGIN_FAIL,
     LOGIN_SUCCESS,
+    // this is to register user
     REGISTER_USER_REQUEST,
     REGISTER_USER_SUCCESS,
     REGISTER_USER_FAIL,
+    // this is to load the user
     LOAD_USER_REQUEST,
     LOAD_USER_SUCCESS,
     LOAD_USER_FAIL,
+    // this is to logout the user
     LOGOUT_SUCCESS,
     LOGOUT_FAIL,
+    // this is for user to update his profile
     UPDATE_PROFILE_REQUEST,
     UPDATE_PROFILE_SUCCESS,
     UPDATE_PROFILE_FAIL,
+    // this is for user to update his password
     UPDATE_PASSWORD_REQUEST,
     UPDATE_PASSWORD_SUCCESS,
     UPDATE_PASSWORD_FAIL,
+    // this is for sending mail for forgot password from the user side
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
     FORGOT_PASSWORD_FAIL,
+    // this is to reset password after the forgot
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAIL,
+    // this is for getting all users - admin
     ALL_USERS_REQUEST,
     ALL_USERS_SUCCESS,
     ALL_USERS_FAIL,
+    // this is for deleting a user from the website database - admin
     DELETE_USER_REQUEST,
     DELETE_USER_SUCCESS,
     DELETE_USER_FAIL,
+    // this is to update a users role - admin
     UPDATE_USER_REQUEST,
     UPDATE_USER_SUCCESS,
     UPDATE_USER_FAIL,
+    // this is to get a single  user details - by admin
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
     USER_DETAILS_FAIL,
@@ -107,7 +119,7 @@ export const logout = () => async (dispatch) => {
     }
 };
 
-// Update Profile
+// Update Profile - it will  be a put request
 export const updateProfile = (userData) => async (dispatch) => {
     try {
         dispatch({type: UPDATE_PROFILE_REQUEST});
@@ -118,19 +130,22 @@ export const updateProfile = (userData) => async (dispatch) => {
             }
         };
 
+        // taking the pre-data of the user
         const {data} = await axios.put(`/api/v1/me/update`, userData, config);
 
+        // we only show the success in the update and delete 
         dispatch({type: UPDATE_PROFILE_SUCCESS, payload: data.success});
     } catch (error) {
         dispatch({type: UPDATE_PROFILE_FAIL, payload: error.response.data.message});
     }
 };
 
-// Update Password
+// Update Password - taking in the password entered by the user - data will be old,new,confirm
 export const updatePassword = (passwords) => async (dispatch) => {
     try {
         dispatch({type: UPDATE_PASSWORD_REQUEST});
 
+        // this defined type of content should be served
         const config = {
             headers: {
                 "Content-Type": "application/json"
@@ -145,7 +160,7 @@ export const updatePassword = (passwords) => async (dispatch) => {
     }
 };
 
-// Forgot Password
+// Forgot Password - we require here the email of the user from the redux state to send email of the jwt token and the reset password url
 export const forgotPassword = (email) => async (dispatch) => {
     try {
         dispatch({type: FORGOT_PASSWORD_REQUEST});
@@ -164,7 +179,7 @@ export const forgotPassword = (email) => async (dispatch) => {
     }
 };
 
-// Reset Password
+// Reset Password - this will take the token and the passwords
 export const resetPassword = (token, passwords) => async (dispatch) => {
     try {
         dispatch({type: RESET_PASSWORD_REQUEST});
@@ -175,6 +190,7 @@ export const resetPassword = (token, passwords) => async (dispatch) => {
             }
         };
 
+        // it will be a put request 
         const {data} = await axios.put(`/api/v1/password/reset/${token}`, passwords, config);
 
         dispatch({type: RESET_PASSWORD_SUCCESS, payload: data.success});
@@ -195,19 +211,20 @@ export const getAllUsers = () => async (dispatch) => {
     }
 };
 
-// get  User Details - for the admin
+// get  User Details - for the admin - finding the user by the id
 export const getUserDetails = (id) => async (dispatch) => {
     try {
         dispatch({type: USER_DETAILS_REQUEST});
         const {data} = await axios.get(`/api/v1/admin/user/${id}`);
 
-        dispatch({type: USER_DETAILS_SUCCESS, payload: data.user});
+        dispatch({type: USER_DETAILS_SUCCESS, payload: data.user });
     } catch (error) {
         dispatch({type: USER_DETAILS_FAIL, payload: error.response.data.message});
     }
 };
 
 // Update User - to update user role in the user-admin toggle between
+// this will take the id and  the data of the user to update the  user role
 export const updateUser = (id, userData) => async (dispatch) => {
     try {
         dispatch({type: UPDATE_USER_REQUEST});
@@ -218,6 +235,7 @@ export const updateUser = (id, userData) => async (dispatch) => {
             }
         };
 
+        // this will be a put request as usual
         const {data} = await axios.put(`/api/v1/admin/user/${id}`, userData, config);
 
         dispatch({type: UPDATE_USER_SUCCESS, payload: data.success});

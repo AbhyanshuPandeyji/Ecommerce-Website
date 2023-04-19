@@ -12,10 +12,14 @@ import SpellcheckIcon from "@mui/icons-material/Spellcheck";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import SideBar from "./Sidebar";
 import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
-const NewProduct = ({ history }) => {
+const NewProduct = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+
+  const navigate = useNavigate();
+
 
   const { loading, error, success } = useSelector((state) => state.newProduct);
 
@@ -24,9 +28,11 @@ const NewProduct = ({ history }) => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [Stock, setStock] = useState(0);
+  // the images is array to add the many images of the  product to show 
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
 
+  // to know  which type of products can be created 
   const categories = [
     "Laptop",
     "Footwear",
@@ -37,22 +43,10 @@ const NewProduct = ({ history }) => {
     "SmartPhones",
   ];
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-    if (success) {
-      alert.success("Product Created Successfully");
-      history.push("/admin/dashboard");
-      dispatch({ type: NEW_PRODUCT_RESET });
-    }
-  }, [dispatch, alert, error, history, success]);
-
+  
   const createProductSubmitHandler = (e) => {
     e.preventDefault();
-
+    
     const myForm = new FormData();
 
     myForm.set("name", name);
@@ -61,31 +55,51 @@ const NewProduct = ({ history }) => {
     myForm.set("category", category);
     myForm.set("Stock", Stock);
 
+    // this is to add multiple images to the product - an array by for each
+    // and the append method is just inserting the images to the product in the images name store name
     images.forEach((image) => {
       myForm.append("images", image);
     });
     dispatch(createProduct(myForm));
   };
-
+  
   const createProductImagesChange = (e) => {
+    // array from creates an copy of the array
     const files = Array.from(e.target.files);
-
+    
+    // this is set to empty initially so the new images don't go on top of the old one it add again by zero index
     setImages([]);
     setImagesPreview([]);
-
+    
+    // now foreach for read file all individual files 
     files.forEach((file) => {
       const reader = new FileReader();
 
       reader.onload = () => {
+        // 2 is for the success in readystate - this will set the new images of the files we select
         if (reader.readyState === 2) {
+          // the array would be empty - but we want to add more to the new one we are adding to images multiple files
           setImagesPreview((old) => [...old, reader.result]);
           setImages((old) => [...old, reader.result]);
         }
       };
-
+      
       reader.readAsDataURL(file);
     });
   };
+  
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearErrors());
+    }
+
+    if (success) {
+      toast.success("Product Created Successfully");
+      navigate("/admin/dashboard");
+      dispatch({ type: NEW_PRODUCT_RESET });
+    }
+  }, [dispatch, navigate, error, success]);
 
   return (
     <Fragment>
@@ -160,6 +174,7 @@ const NewProduct = ({ history }) => {
                 name="avatar"
                 accept="image/*"
                 onChange={createProductImagesChange}
+                // the multiple is here to add multiple files at once
                 multiple
               />
             </div>

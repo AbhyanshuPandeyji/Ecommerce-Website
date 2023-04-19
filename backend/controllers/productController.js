@@ -11,6 +11,7 @@ const cloudinary = require("cloudinary");
 exports.createProduct = catchAsyncErrors(
     async (req, res, next) => {
 
+        // taking images as an array so we can add multiple strings of the url in the images when creating the product
         let images = [];
 
         if(typeof req.body.images === "string"){
@@ -20,17 +21,19 @@ exports.createProduct = catchAsyncErrors(
         }else{
             // to add multiple images
             images = req.body.images;
-
         }
 
+        // the link url of the images - to store it
         const imagesLinks = [];
 
+        // this will run till the no of links of images is done
         for(let i = 0 ; i< images.length ; i++){
             const result  = await cloudinary.v2.uploader.upload(images[i], {
                 // products images folder into cloundinary
                 folder: "products",
             });
 
+            // pushing the images to the array the name and the url of the image
             imagesLinks.push({
                 public_id: result.public_id,
                 url:result.secure_url,
@@ -38,7 +41,8 @@ exports.createProduct = catchAsyncErrors(
         }
         // after this loop completes we will get the url and all the images link
 
-        // now body has the cloudinary links in images  
+        // now body has the cloudinary links in images
+        // this will have the link of the cloudinary links in the body  
         req.body.images = imagesLinks;
         req.body.user = req.user.id;
 
@@ -55,8 +59,9 @@ exports.createProduct = catchAsyncErrors(
 // Get All Products --
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 
-    // return next(new ErrorHandler("Product Not Found", 404));
-    
+    // for getting product based on category can use - future update
+    // create a separate function on it
+    // const product = await Product.find({category:"Mobile"});
     
     // for Pagination 
     const resultPerPage = 8;
@@ -101,7 +106,9 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 
 
 });
-// Get All Products --
+
+
+// Get All Products -- Admin
 exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
 
     // for front end to show how many products are available
@@ -348,11 +355,13 @@ exports.deleteProductReview = catchAsyncErrors( async(req,res,next)=>{
         avg+=rev.rating;
     });
 
+    let ratings = 0;
+
     if(reviews.length === 0 )
     {
         ratings = 0;
     }else{
-    const ratings = avg / reviews.length ;
+    ratings = avg / reviews.length ;
 
     }
 

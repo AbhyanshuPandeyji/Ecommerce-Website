@@ -1,26 +1,26 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 // import Carousel from 'react-material-ui-carousel';
 import {Fragment} from 'react';
 import './ProductDetails.css'
 import Loader from '../layout/Loader/Loader.js'
 import MetaData from '../layout/MetaData.js'
-// import { Slide } from '@mui/material';
 import Carousel from 'react-material-ui-carousel'
+import { addItemsToCart } from '../../actions/cartAction';
+
 // this is to work with the image url in the function instead of params - match.params.id instead - import useParams and create an id
 import {useParams} from 'react-router-dom'
 
 import {useSelector, useDispatch} from 'react-redux'
-import {clearErrors, getProductDetails} from '../../actions/productAction';
+import {clearErrors, getProductDetails, newReview} from '../../actions/productAction';
 
-import ReactStars from 'react-rating-stars-component';
 import { Rating } from '@mui/material';
 
 import ReviewCard from './ReviewCard.js'
 
 import { ToastContainer , toast } from 'react-toastify';
-
-
-
+// for review 
+import { Dialog, DialogActions , DialogContent , DialogContextText , DialogTitle , Button  } from '@mui/material';
+import { NEW_REVIEW_RESET } from '../../constants/productConstants';
 
 
 
@@ -39,39 +39,94 @@ const ProductDetails = () => {
     const {id} = useParams();
 
     
-
     // to pull data from the redux
-    const {product, loading, error} = useSelector((state) => state.productDetails);
+    const {product, loading ,error } = useSelector((state) => state.productDetails);
+    
+    const { success , error: reviewError } = useSelector((state) => state.newReview)
 
+    const [quantity , setQuantity] = useState(1);
 
+    // const options = {
+    //     size: "large",
+    //     value: product.ratings,
+    //     readOnly: true,
+    //     precision: 0.5,
+    // };
+    
+    const [open, setOpen] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
 
-    // for error component
-    const errorAlert = () => {
-        toast.error( "how awesome" ,{
-            position:"bottom-center"
-        });
+    const increaseQuantity = () =>{
+        // if the  quantity should be less than equal to stock
+        if(product.Stock <= quantity) return;
+
+        const qty = quantity + 1;
+        setQuantity(qty);
     }
+
+    const decreaseQuantity = () =>{
+        // if quantity is less than or equal to 1 
+        if(1 >= quantity) return;
+
+        const qty = quantity - 1;
+        setQuantity(qty);
+    }
+
+
+    const addToCartHandler = () =>{
+        dispatch(addItemsToCart(id , quantity));
+        toast.success("Items Added To Cart ");
+
+    }
+
+    const submitReviewToggle = () =>{
+        open ? setOpen(false) : setOpen(true);
+    }
+
+    const reviewSubmitHandler = () =>{
+        const myForm = new FormData();
+
+        myForm.set("rating", rating)
+        // did typo here the value should matched the input field want in the form - state value notation
+        myForm.set("comment", comment)
+        myForm.set("productId", id)
+
+        dispatch(newReview(myForm));
+        
+        setOpen(false);
+    };
+
+    const options = {
+        // this will color the starts
+        size: "large",
+        value: product.ratings,
+        readOnly: true,
+        precision: 0.5,
+    }
+    // for error component
     useEffect(() => {
         if(error){
-            errorAlert();
+            toast.error(error)
             dispatch(clearErrors());
         }
+
+        if(reviewError){
+            toast.error(reviewError)
+            dispatch(clearErrors());
+        }
+
+        if(success){
+            toast.success("Review Submitted Successfully");
+            dispatch({type: NEW_REVIEW_RESET});
+        }
+
         dispatch(getProductDetails(id));
-    }, [dispatch, id , error ])
+    }, [dispatch, id , error , reviewError ,success ])
     // }, [dispatch, match.params.id]);
 
 
-    const options = {
-        edit: false,
-        content: "rgba(20,20,20,0.1)",
-        // this will color the starts
-        activeColor: "tomato",
-        size: window.innerWidth < 600 ? 20 : 25,
-        value: product.ratings,
-        readOnly: true,
-        isHalf: true
-
-    }
+   
 
     return (
         <Fragment> {
@@ -112,7 +167,7 @@ const ProductDetails = () => {
                                 }</p>
                             </div>
                             <div className='detailsBlock-2'>
-                                <ReactStars {...options}/>
+                                <Rating {...options}/>
                                 <span className='detailsBlock-2-span'>
                                     {" "}
                                     ({
@@ -130,20 +185,21 @@ const ProductDetails = () => {
                                 {/* add to cart section */}
                                 <div className='detailsBlock-3-1'>
                                     <div className='detailsBlock-3-1-1'>
-                                        <button>-</button>
-                                        <input readOnly type="number" value="1"/>
-                                        <button>+</button>
+                                        <button onClick={decreaseQuantity} >-</button>
+                                        <input readOnly type="number" value={quantity} />
+                                        <button onClick={increaseQuantity}>+</button>
                                     </div>
-                                    {""}
-                                    <button>Add To Cart</button>
+                                    
+                                    <button  disabled={product.Stock < 1 ? true : false } onClick={addToCartHandler}>Add To Cart</button>
                                 </div>
                                 <div>
-                                    Status:{""}
+                                    Status:
                                     <b className={
                                         product.Stock < 1 ? "redColor" : "greenColor"
                                     }>
+                                        {"   "}
                                         {
-                                        product.Stock < 1 ? "OutOfStock" : "InStock"
+                                        product.Stock < 1 ? "Out Of Stock" : "In Stock"
                                     } </b>
 
                                 </div>
@@ -158,15 +214,52 @@ const ProductDetails = () => {
                             </div>
 
                             {/* button to submit review */}
-                            <button className='submitReview'>Submit Review</button>
+                            <button onClick={submitReviewToggle} className='submitReview'>Submit Review</button>
                         </div>
                     </div>
-
+                    
 
                     {/* Reviews Card */}
                     <h3 className='reviewsHeading'>
                         Reviews
                     </h3>
+
+                    {/* This is for the dialog popup for the sumbit button */}
+                    <Dialog
+                        aria-labelledby="simple-dialog-title"
+                        // this is handle by use state
+                        open={open}
+                        onClose={submitReviewToggle}
+                    >
+                        <DialogTitle>Submit Review</DialogTitle>
+                        <DialogContent className="submitDialog">
+                        {/* this rating component is from the react */}
+                        <Rating
+                            onChange={(e) => setRating(e.target.value)}
+                            value={rating}
+                            size="large"
+                        />
+
+                        <textarea
+                            className="submitDialogTextArea"
+                            cols="30"
+                            rows="5"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                        ></textarea>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={submitReviewToggle} color="secondary">
+                            Cancel
+                        </Button>
+                        <Button onClick={reviewSubmitHandler} color="primary">
+                            Submit
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+
+
+
                     {/* if product reviews is present then show the review */}
                     {
                     product.reviews && product.reviews[0] ? (
@@ -185,7 +278,6 @@ const ProductDetails = () => {
                 </Fragment>
             )
         }
-        <ToastContainer/>
         </Fragment>
 
     )

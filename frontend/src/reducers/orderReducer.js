@@ -1,31 +1,40 @@
 import {
+  // this is to create order - this will handled by the cart
   CREATE_ORDER_REQUEST,
   CREATE_ORDER_SUCCESS,
   CREATE_ORDER_FAIL,
+  // this to access the user order
   MY_ORDERS_REQUEST,
   MY_ORDERS_SUCCESS,
   MY_ORDERS_FAIL,
+  // this is to access all orders - by admin
   ALL_ORDERS_REQUEST,
   ALL_ORDERS_SUCCESS,
   ALL_ORDERS_FAIL,
+  // this is to update an orders status
   UPDATE_ORDER_REQUEST,
   UPDATE_ORDER_SUCCESS,
   UPDATE_ORDER_FAIL,
   UPDATE_ORDER_RESET,
+  //this is to delete and orders 
   DELETE_ORDER_REQUEST,
   DELETE_ORDER_SUCCESS,
   DELETE_ORDER_FAIL,
   DELETE_ORDER_RESET,
+  //this is to get an orders details
   ORDER_DETAILS_REQUEST,
   ORDER_DETAILS_SUCCESS,
   ORDER_DETAILS_FAIL,
   CLEAR_ERRORS,
-} from "../constants/orderConstants";
+} from "../constants/orderConstants.js";
 
 // in admin only the success and the reset condition will change all will usually remain same
 // state intake and the loading or the user or the any other functionality like order or , product or the cart will be changed depending upon the state
+// the update and delete usually have a component gives back a message of success isUpdated or isDeleted
+// the update reset is the state usually used to stop the process after 1 time to not update/delete continuos 
 
-// to create an order for users
+
+// to create an order for users 
 export const newOrderReducer = (state = {}, action) => {
   switch (action.type) {
     case CREATE_ORDER_REQUEST:
@@ -117,7 +126,8 @@ export const allOrdersReducer = (state = { orders: [] }, action) => {
   }
 };
 
-// for action on it for admin only
+// for action on it for admin only - this is  to update and delete the order status
+// only success and reset will change case from each other
 export const orderReducer = (state = {}, action) => {
   switch (action.type) {
     case UPDATE_ORDER_REQUEST:
@@ -171,7 +181,7 @@ export const orderReducer = (state = {}, action) => {
 };
 
 
-// to see the current order details
+// to see the order details of our orders
 export const orderDetailsReducer = (state = { order: {} }, action) => {
   switch (action.type) {
     case ORDER_DETAILS_REQUEST:

@@ -17,7 +17,7 @@ const Profile = () => {
     if (isAuthenticated === false) {
       navigate("/login");
     }
-  }, [isAuthenticated]);
+  }, [navigate,isAuthenticated]);
   return (
     <Fragment>
       {loading ? (
@@ -29,6 +29,7 @@ const Profile = () => {
             <div>
               <h1>My Profile</h1>
               {/* this is creating the null error */}
+              {/* this is because if we load the component before the things in it we will get the error */}
               <img src={user.avatar.url} alt={user.name} />
               <Link to="/me/update">Edit Profile</Link>
             </div>
@@ -43,6 +44,7 @@ const Profile = () => {
               </div>
               <div>
                 <h4>Joined On</h4>
+                {/* sub str is used to show date only  */}
                 <p>{String(user.createdAt).substr(0, 10)}</p>
               </div>
 

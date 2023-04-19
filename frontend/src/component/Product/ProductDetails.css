@@ -1,5 +1,4 @@
 .ProductDetails {
-    background-color: rgb(255, 255, 255);
     width: 100vw;
     max-width: 100%;
     padding: 6vmax;
@@ -70,7 +69,7 @@
     align-items: center;
   }
   
-  .detailsBlock-3-1-1 > button {
+  .detailsBlock-3-1-1 > button{
     border: none;
     background-color: rgba(0, 0, 0, 0.616);
     padding: 0.5vmax;
@@ -78,14 +77,15 @@
     color: white;
     transition: all 0.5s;
   }
+
+
   .detailsBlock-3-1-1 > button:hover {
     background-color: rgba(0, 0, 0, 0.767);
   }
   
   .detailsBlock-3-1-1 > input {
     border: none;
-    padding: 1vmax;
-    width: 1vmax;
+    width: 2vmax;
     text-align: center;
     outline: none;
     font: 400 1vmax "Roboto";

@@ -1,9 +1,10 @@
+// this will be our main container holding the information
+
 import React from "react";
 import "./sidebar.css";
 import logo from "../../images/logo.png";
 import { Link } from "react-router-dom";
-import { TreeView , TreeItem } from '@mui/material'
-import { TreeView , TreeItem } from '@mui/lab';
+import { TreeView , TreeItem } from '@mui/lab'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import AddIcon from '@mui/icons-material/Add';
@@ -25,10 +26,14 @@ const Sidebar = () => {
         </p>
       </Link>
       <Link>
+        {/* this is to toggle between the icons */}
         <TreeView
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ImportExportIcon />}
         >
+          {/* these are for the items withing the Title */}
+          {/* only product have the tree view because its the only place we see the creating */}
+          {/* Node one is main heading and 2 ,3 are links but the within the node 1 */}
           <TreeItem nodeId="1" label="Products">
             <Link to="/admin/products">
               <TreeItem nodeId="2" label="All" icon={<PostAddIcon />} />

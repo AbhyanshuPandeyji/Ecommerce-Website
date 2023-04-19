@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// import { useAlert } from "react-alert";
 import { Button } from "@mui/material";
 import { useNavigate , useParams} from "react-router-dom";
 import MetaData from "../layout/MetaData";
@@ -19,7 +18,6 @@ import { toast , ToastContainer } from "react-toastify";
 
 const UpdateUser = () => {
   const dispatch = useDispatch();
-  // const alert = useAlert();
 
   const navigate = useNavigate();
 
@@ -53,30 +51,39 @@ const UpdateUser = () => {
       setEmail(user.email);
       setRole(user.role);
     }
+
+
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
     }
 
-    if (updateError) {
+    // if error comes in updating the user
+    if(updateError) {
       toast.error(updateError);
       dispatch(clearErrors());
     }
 
+    // if user is been updated successfully
     if (isUpdated) {
       toast.success("User Updated Successfully");
       navigate("/admin/users");
+      // to stop the update process after first successful attempt
       dispatch({ type: UPDATE_USER_RESET });
     }
   }, [dispatch, error, navigate,  isUpdated, updateError, user, userId]);
 
+  // this is to handle the submission update user 
   const updateUserSubmitHandler = (e) => {
     e.preventDefault();
 
+    // take the user data and set into a form to send to the api
     const myForm = new FormData();
 
+    // these two will be taken for user selection 
     myForm.set("name", name);
     myForm.set("email", email);
+    // this will be taken for the update
     myForm.set("role", role);
 
     // to update user and change the value in the form of the user or the row things of the user
@@ -94,6 +101,7 @@ const UpdateUser = () => {
           {loading ? (
             <Loader />
           ) : (
+            // form to update user role
             <form
               className="createProductForm"
               onSubmit={updateUserSubmitHandler}
@@ -121,6 +129,7 @@ const UpdateUser = () => {
                 />
               </div>
 
+              {/* the area where the user role will be selected - if user then to admin and admin to user */}
               <div>
                 <VerifiedUserIcon />
                 <select value={role} onChange={(e) => setRole(e.target.value)}>

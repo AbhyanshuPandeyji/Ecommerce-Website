@@ -18,6 +18,8 @@ const cloudinary = require("cloudinary");
 // Register A User - Sign Up Feature -  this is a different method than before verification will be done by outside
 exports.registerUser = catchAsyncErrors( async(req,res,next)=>{
 
+    // send email to the user when he registers on the site
+
     const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar,{
         folder: "avatars",
         width: 150,
@@ -36,6 +38,18 @@ exports.registerUser = catchAsyncErrors( async(req,res,next)=>{
             url: myCloud.secure_url,
         },
     });
+
+    // here will come the email send to user to register to the site
+    // await sendEmail({
+    //     email: user.email,
+    //     subject:`Ecommerce Password Recovery`,
+    //     // message from above
+    //     message,
+
+    // });
+
+    // ----------------------------------------
+
 
     // const token = user.getJWTToken();
 
@@ -132,8 +146,12 @@ exports.forgotPassword = catchAsyncErrors( async(req,res,next)=>{
     // the url will be changed of the data base so ${res.get("host")}=localhost and for protocol can be http or https so = ${req.protocol}
     // this will save the new generated token for the given amount of time for changing the password if it been used then password can be changed if it expires the password token just go back to normal
     // the reset is just the route
-    const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
+    // this will be our actual url in production mode
+    // const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
 
+
+    // this is our dummy email to generate token for the frontend - it wont be api/v1 it will start with the password url
+    const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`
     
     // I need to start from here now to do the project  
     
@@ -281,13 +299,14 @@ exports.updateProfile = catchAsyncErrors( async(req,res,next)=>{
     if(req.body.avatar !== ""){
         const user = await User.findById(req.user.id);
 
+        // image public id is been saved in user.avatar the state in the redux if want to check
         const imageId = user.avatar.public_id;
 
         await cloudinary.v2.uploader.destroy(imageId);
 
         const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
             folder: "avatars",
-            width:150,
+            width: 150,
             crop: "scale",
         });
     
@@ -295,17 +314,16 @@ exports.updateProfile = catchAsyncErrors( async(req,res,next)=>{
             public_id: myCloud.public_id,
             url: myCloud.secure_url,
         }
-    
+
     }
 
     // above we take the data based on which we want to update
     // we will add cloudinary later
 
     // take id to check the update based on the new user data to match it with the id and then the options based on it
-    const user = await User.findByIdAndUpdate(req.user.id,newUserData,{
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData ,{
         // new decide the validation of intake the new data into the object 
         new:true,
-
         runValidators:true,
         useFindAndModify: false,
 
@@ -371,6 +389,8 @@ exports.updateUserRole = catchAsyncErrors( async(req,res,next)=>{
     // take id to check the update based on the new user data to match it with the id and then the options based on it
     // have to be req.params.id otherwise user admin will update itself in the data base
     // if it only update if the user exits
+
+    // mongo db will handle this error by wrong id error
     const user = await User.findByIdAndUpdate(req.params.id,newUserData,{
         // new decide the validation of intake the new data into the object 
         new:true,
@@ -405,6 +425,7 @@ exports.deleteUserProfile = catchAsyncErrors( async(req,res,next)=>{
         return next(new ErrorHandler(`User does not exists with Id: ${req.params.id} `, 400));
     }
 
+    // to delete the images of the user from the database when user is been deleted
     const imageId = user.avatar.public_id;
 
     await cloudinary.v2.uploader.destroy(imageId);

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -21,14 +21,17 @@ const UsersList = () => {
   // const alert = useAlert();
   const navigate = useNavigate();
 
+  // this is to take in the all the user
   const { error, users , loading  } = useSelector((state) => state.allUsers);
 
+  // this is to get the singular profile of the user
   const {
     error: deleteError,
     isDeleted,
     message,
   } = useSelector((state) => state.profile);
 
+  // delete user by his id 
   const deleteUserHandler = (id) => {
     dispatch(deleteUser(id));
   };
@@ -39,20 +42,25 @@ const UsersList = () => {
       dispatch(clearErrors());
     }
 
+    // if get error in the delete of the user
     if (deleteError) {
       toast.error(deleteError);
       dispatch(clearErrors());
     }
 
+    // if user been deleted successfully
     if (isDeleted) {
+      // this message is being received from the backend
       toast.success(message);
       navigate("/admin/users");
       dispatch({ type: DELETE_USER_RESET });
     }
 
+    // this is to get all the users
     dispatch(getAllUsers());
   }, [dispatch, error, deleteError, navigate,  isDeleted, message]);
 
+  // the header column
   const columns = [
     { field: "id", headerName: "User ID", minWidth: 180, flex: 0.8 },
 
@@ -75,8 +83,9 @@ const UsersList = () => {
       type: "number",
       minWidth: 150,
       flex: 0.3,
+      // this coloring don't works for me
       cellClassName: (params) => {
-        return params.getValue(params.id, "role") === "admin"
+        return (params.id, "role") === "admin"
           ? "greenColor"
           : "redColor";
       },
@@ -92,13 +101,13 @@ const UsersList = () => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/user/${params.getValue(params.id, "id")}`}>
+            <Link to={`/admin/user/${params.id}`}>
               <EditIcon />
             </Link>
 
             <Button
               onClick={() =>
-                deleteUserHandler(params.getValue(params.id, "id"))
+                deleteUserHandler(params.id)
               }
             >
               <DeleteIcon />
@@ -109,8 +118,11 @@ const UsersList = () => {
     },
   ];
 
+
+  // the row data underneath the column
   const rows = [];
 
+  // to go through all the users and set get the data and set on the appropriate column
   users &&
     users.forEach((item) => {
       rows.push({

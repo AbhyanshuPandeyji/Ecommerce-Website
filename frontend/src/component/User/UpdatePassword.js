@@ -3,16 +3,18 @@ import "./UpdatePassword.css";
 import Loader from "../layout/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, updatePassword } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+import { useNavigate } from "react-router-dom";
 import { UPDATE_PASSWORD_RESET } from "../../constants/userConstants";
 import MetaData from "../layout/MetaData";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import LockIcon from "@material-ui/icons/Lock";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import { toast } from 'react-toastify';
 
-const UpdatePassword = ({ history }) => {
+const UpdatePassword = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+
+  const navigate = useNavigate(); 
 
   const { error, isUpdated, loading } = useSelector((state) => state.profile);
 
@@ -34,20 +36,21 @@ const UpdatePassword = ({ history }) => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
 
     if (isUpdated) {
-      alert.success("Profile Updated Successfully");
+      toast.success("Password Updated Successfully");
 
-      history.push("/account");
+      navigate("/account");
 
+      // this is to stop password update after first success
       dispatch({
         type: UPDATE_PASSWORD_RESET,
       });
     }
-  }, [dispatch, error, alert, history, isUpdated]);
+  }, [dispatch, error, navigate ,isUpdated]);
 
   return (
     <Fragment>
@@ -64,6 +67,7 @@ const UpdatePassword = ({ history }) => {
                 className="updatePasswordForm"
                 onSubmit={updatePasswordSubmit}
               >
+                {/* this is to take old password */}
                 <div className="loginPassword">
                   <VpnKeyIcon />
                   <input
@@ -74,17 +78,19 @@ const UpdatePassword = ({ history }) => {
                     onChange={(e) => setOldPassword(e.target.value)}
                   />
                 </div>
-
+                {/* This is to take the new password */}
                 <div className="loginPassword">
                   <LockOpenIcon />
-                  <input
-                    type="password"
-                    placeholder="New Password"
-                    required
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                  <input 
+                  type="password"
+                  placeholder="New Password"
+                  required
+                  value={newPassword}
+                  onChange={(e)=>setNewPassword(e.target.value)}
                   />
                 </div>
+                {/* this is to check the password you input'ed matched the password with confirm one  */}
+                {/* this is done to make sure user don't enter the password he didn't intended to and unable to login later */}
                 <div className="loginPassword">
                   <LockIcon />
                   <input

@@ -1,15 +1,18 @@
+// forgot password will send the email from our main mail to the user - the website owner one to the user
+// it will include a url that after user hit go to the reset password with the validity token of our choice of time
+
 import React, { Fragment, useState, useEffect } from "react";
 import "./ForgotPassword.css";
 import Loader from "../layout/Loader/Loader";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, forgotPassword } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
 import MetaData from "../layout/MetaData";
+import { toast , ToastContainer} from "react-toastify"
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
 
   const { error, message, loading } = useSelector(
     (state) => state.forgotPassword
@@ -17,6 +20,7 @@ const ForgotPassword = () => {
 
   const [email, setEmail] = useState("");
 
+  // our for taking data and submitting it with use of the action dispatch
   const forgotPasswordSubmit = (e) => {
     e.preventDefault();
 
@@ -28,16 +32,17 @@ const ForgotPassword = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
 
     if (message) {
-      alert.success(message);
+      toast.success(message);
     }
-  }, [dispatch, error, alert, message]);
+  }, [dispatch, error, message]);
 
   return (
+    // we need only mail box here
     <Fragment>
       {loading ? (
         <Loader />

@@ -1,30 +1,39 @@
 import axios from "axios";
 
 import {
+    // to get all products
     ALL_PRODUCT_FAIL,
     ALL_PRODUCT_REQUEST,
     ALL_PRODUCT_SUCCESS,
+    // to get a single product
     ADMIN_PRODUCT_REQUEST,
     ADMIN_PRODUCT_SUCCESS,
     ADMIN_PRODUCT_FAIL,
+    // to create a product
     NEW_PRODUCT_REQUEST,
     NEW_PRODUCT_SUCCESS,
     NEW_PRODUCT_FAIL,
+    // to update a product
     UPDATE_PRODUCT_REQUEST,
     UPDATE_PRODUCT_SUCCESS,
     UPDATE_PRODUCT_FAIL,
+    // to delete a product
     DELETE_PRODUCT_REQUEST,
     DELETE_PRODUCT_SUCCESS,
     DELETE_PRODUCT_FAIL,
+    // to take a product on a single page
     PRODUCT_DETAILS_REQUEST,
     PRODUCT_DETAILS_FAIL,
     PRODUCT_DETAILS_SUCCESS,
+    // to take in user review
     NEW_REVIEW_REQUEST,
     NEW_REVIEW_SUCCESS,
     NEW_REVIEW_FAIL,
+    // to show all reviews on the product
     ALL_REVIEW_REQUEST,
     ALL_REVIEW_SUCCESS,
     ALL_REVIEW_FAIL,
+    // to delete a review of the product
     DELETE_REVIEW_REQUEST,
     DELETE_REVIEW_SUCCESS,
     DELETE_REVIEW_FAIL,
@@ -76,7 +85,7 @@ export const getAdminProduct = () => async (dispatch) => {
     }
 };
 
-// Create Product
+// Create Product - to create  product 
 export const createProduct = (productData) => async (dispatch) => {
     try {
         dispatch({type: NEW_PRODUCT_REQUEST});
@@ -87,6 +96,7 @@ export const createProduct = (productData) => async (dispatch) => {
             }
         };
 
+        // we now just have to give the data to create a product
         const {data} = await axios.post(`/api/v1/admin/product/new`, productData, config);
 
         dispatch({type: NEW_PRODUCT_SUCCESS, payload: data});
@@ -95,7 +105,7 @@ export const createProduct = (productData) => async (dispatch) => {
     }
 };
 
-// Update Product
+// Update Product - needs the id and the product data of the before of the product exits only then it will work
 export const updateProduct = (id, productData) => async (dispatch) => {
     try {
         dispatch({type: UPDATE_PRODUCT_REQUEST});
@@ -114,7 +124,7 @@ export const updateProduct = (id, productData) => async (dispatch) => {
     }
 };
 
-// Delete Product
+// Delete Product- this will take the id in reference to delete from the params
 export const deleteProduct = (id) => async (dispatch) => {
     try {
         dispatch({type: DELETE_PRODUCT_REQUEST});
@@ -140,7 +150,7 @@ export const getProductDetails = (id) => async (dispatch) => {
     }
 };
 
-// NEW REVIEW
+// NEW REVIEW - to create a review
 export const newReview = (reviewData) => async (dispatch) => {
     try {
         dispatch({type: NEW_REVIEW_REQUEST});
@@ -151,6 +161,7 @@ export const newReview = (reviewData) => async (dispatch) => {
             }
         };
 
+        // taking review from the user , id , comment , rating 
         const {data} = await axios.put(`/api/v1/review`, reviewData, config);
 
         dispatch({type: NEW_REVIEW_SUCCESS, payload: data.success});
@@ -159,11 +170,12 @@ export const newReview = (reviewData) => async (dispatch) => {
     }
 };
 
-// Get All Reviews of a Product
+// Get All Reviews of a Product - to search a product review by its id of the product by admin
 export const getAllReviews = (id) => async (dispatch) => {
     try {
         dispatch({type: ALL_REVIEW_REQUEST});
 
+        // the id will be the product id
         const {data} = await axios.get(`/api/v1/reviews?id=${id}`);
 
         dispatch({type: ALL_REVIEW_SUCCESS, payload: data.reviews});
@@ -172,12 +184,12 @@ export const getAllReviews = (id) => async (dispatch) => {
     }
 };
 
-// Delete Review of a Product
+// Delete Review of a Product - it will take the id of the review and teh 
 export const deleteReviews = (reviewId, productId) => async (dispatch) => {
     try {
         dispatch({type: DELETE_REVIEW_REQUEST});
 
-        // only delete the review of the user on a particular product 
+        // only delete the review of the user on a particular product and the particular review 
         const {data} = await axios.delete(`/api/v1/reviews?id=${reviewId}&productId=${productId}`);
 
         // need to send the success instead of the reviews

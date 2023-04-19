@@ -1,7 +1,6 @@
 import React from 'react';
-import ReactStarts from 'react-rating-stars-component';
 import { Link } from 'react-router-dom';
-
+import { Rating } from '@mui/material';
 
 
 
@@ -10,13 +9,11 @@ const ProductCard = ({product}) => {
 
     // temporary - edit false will help to not change the starts rating - uneditable content
 const options = {
-    edit: false,
-    content:"rgba(20,20,20,0.1)",
+    size: "large",
     // this will color the starts
-    activeColor:"tomato",
     value: product.ratings,
     readOnly : true,
-    isHalf: true,
+    precision: 0.5
 
 }
 
@@ -29,7 +26,7 @@ const options = {
             <p>{product.name}</p>
             <div>
                 {/* This will hold our ratings in stars */}
-                <ReactStarts {...options} />{" "}
+                <Rating {...options} />{" "}
                 {/* This will hold our no of reviews - it will be dynamic */}
                 <span className='productCardSpan'>({product.numOfReviews} Reviews)</span>
             </div>

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import "./productReviews.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -17,53 +17,65 @@ import { useNavigate , useParams} from "react-router-dom";
 import { toast , ToastContainer } from "react-toastify";
 import { DELETE_REVIEW_RESET } from "../../constants/productConstants";
 
-const ProductReviews = ({ history }) => {
+const ProductReviews = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const alert = useAlert();
 
 
+  // this is to get a single review data
   const { error: deleteError, isDeleted } = useSelector(
     (state) => state.review
   );
 
+  // this is to get all reviews
   const { error, reviews, loading } = useSelector(
     (state) => state.productReviews
   );
 
+  // the product id will define which products review we will see
   const [productId, setProductId] = useState("");
 
+  // this is to delete a review - it will need the product id and review it to match both 
   const deleteReviewHandler = (reviewId) => {
     dispatch(deleteReviews(reviewId, productId));
   };
 
+  // to get reviews on a product 
   const productReviewsSubmitHandler = (e) => {
     e.preventDefault();
     dispatch(getAllReviews(productId));
   };
 
   useEffect(() => {
-    if (productId.length === 24) {
+    // to check the id been entered for the search of the reviews of the product is right or not
+    if(productId.length === 24) {
       dispatch(getAllReviews(productId));
     }
+    // if error occur the error
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
     }
 
-    if (deleteError) {
+    // if error occur during delete
+    if(deleteError) {
       toast.error(deleteError);
       dispatch(clearErrors());
     }
 
-    if (isDeleted) {
+    // if the delete is been successful 
+    if(isDeleted) {
+      // this is to give the success message of the delete
       toast.success("Review Deleted Successfully");
       navigate("/admin/reviews");
+      // this is to stop the process of the delete after one successful attempt
       dispatch({ type: DELETE_REVIEW_RESET });
     }
   }, [dispatch, error, deleteError,isDeleted, productId]);
 
+
+  // columns of the table
   const columns = [
     { field: "id", headerName: "Review ID", minWidth: 200, flex: 0.5 },
 
@@ -89,7 +101,7 @@ const ProductReviews = ({ history }) => {
       flex: 0.4,
 
       cellClassName: (params) => {
-        return params.getValue(params.id, "rating") >= 3
+        return params.rating >= 3
           ? "greenColor"
           : "redColor";
       },
@@ -105,9 +117,10 @@ const ProductReviews = ({ history }) => {
       renderCell: (params) => {
         return (
           <Fragment>
+            {/* the params.getValue is not a function error - so used params.id */}
             <Button
               onClick={() =>
-                deleteReviewHandler(params.getValue(params.id, "id"))
+                deleteReviewHandler(params.id)
               }
             >
               <DeleteIcon />
@@ -118,8 +131,12 @@ const ProductReviews = ({ history }) => {
     },
   ];
 
+
+  // rows of the table
   const rows = [];
 
+
+  //the data of the table -- the reviews on the product
   reviews &&
     reviews.forEach((item) => {
       rows.push({
@@ -137,6 +154,7 @@ const ProductReviews = ({ history }) => {
       <div className="dashboard">
         <SideBar />
         <div className="productReviewsContainer">
+          {/* // to search the reviews on the product */}
           <form
             className="productReviewsForm"
             onSubmit={productReviewsSubmitHandler}
@@ -154,6 +172,7 @@ const ProductReviews = ({ history }) => {
               />
             </div>
 
+            {/* if no id exits then button will be blocked */}
             <Button
               id="createProductBtn"
               type="submit"

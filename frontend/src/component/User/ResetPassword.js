@@ -3,14 +3,17 @@ import "./ResetPassword.css";
 import Loader from "../layout/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, resetPassword } from "../../actions/userAction";
-import { useAlert } from "react-alert";
 import MetaData from "../layout/MetaData";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import LockIcon from "@material-ui/icons/Lock";
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
+import { useNavigate, useParams } from "react-router-dom";
+import { toast , ToastContainer } from 'react-toastify'
 
-const ResetPassword = ({ history, match }) => {
+const ResetPassword = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+
+  const navigate = useNavigate();
+  const { token } = useParams();
 
   const { error, success, loading } = useSelector(
     (state) => state.forgotPassword
@@ -27,21 +30,21 @@ const ResetPassword = ({ history, match }) => {
     myForm.set("password", password);
     myForm.set("confirmPassword", confirmPassword);
 
-    dispatch(resetPassword(match.params.token, myForm));
+    dispatch(resetPassword(token, myForm));
   };
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
 
     if (success) {
-      alert.success("Password Updated Successfully");
+      toast.success("Password Reset is Successful");
 
-      history.push("/login");
+      navigate("/login");
     }
-  }, [dispatch, error, alert, history, success]);
+  }, [dispatch, error, navigate, success]);
 
   return (
     <Fragment>
@@ -68,7 +71,7 @@ const ResetPassword = ({ history, match }) => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <div className="loginPassword">
+                <div>
                   <LockIcon />
                   <input
                     type="password"

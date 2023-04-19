@@ -12,7 +12,7 @@ import {
     PRODUCT_DETAILS_REQUEST,
     PRODUCT_DETAILS_FAIL,
     PRODUCT_DETAILS_SUCCESS,
-    // for users 
+    // for users
     NEW_REVIEW_REQUEST,
     NEW_REVIEW_SUCCESS,
     NEW_REVIEW_FAIL,
@@ -47,13 +47,13 @@ import {
 // in admin only the success and the reset condition will change all will usually remain same
 // state intake and the loading or the user or the any other functionality like order or , product or the cart will be changed depending upon the state
 
+// this for any user to ask for product - change name of reducer to productsReducer
 export const productsReducer = (state = {
     products: []
 }, action) => {
-    switch (action.type) {
-        // for users
+    switch (action.type) { // for users
         case ALL_PRODUCT_REQUEST:
-        // for admin only
+            // for admin only
         case ADMIN_PRODUCT_REQUEST:
             return {loading: true, products: []};
         case ALL_PRODUCT_SUCCESS:
@@ -64,11 +64,11 @@ export const productsReducer = (state = {
                 resultPerPage: action.payload.resultPerPage,
                 filteredProductsCount: action.payload.filteredProductsCount
             };
-        
-        // for admin only
+
+            // for admin only
         case ADMIN_PRODUCT_SUCCESS:
             return {loading: false, products: action.payload};
-            
+
         case ALL_PRODUCT_FAIL:
         case ADMIN_PRODUCT_FAIL:
             return {loading: false, error: action.payload};
@@ -83,6 +83,7 @@ export const productsReducer = (state = {
     }
 };
 
+// to create a new product its for admin only
 export const newProductReducer = (state = {
     product: {}
 }, action) => {
@@ -93,6 +94,7 @@ export const newProductReducer = (state = {
                 loading: true
             };
         case NEW_PRODUCT_SUCCESS:
+            // this will use to create product  - we use the action.payload.product which will  help us  to only take data and it will choose the action state
             return {loading: false, success: action.payload.success, product: action.payload.product};
         case NEW_PRODUCT_FAIL:
             return {
@@ -115,6 +117,7 @@ export const newProductReducer = (state = {
     }
 };
 
+// to update and delete a product for admin only - only the success and reset changes isUpdated - isDeleted
 export const productReducer = (state = {}, action) => {
     switch (action.type) {
         case DELETE_PRODUCT_REQUEST:
@@ -163,6 +166,7 @@ export const productReducer = (state = {}, action) => {
     }
 };
 
+// to get a product details on a single page
 export const productDetailsReducer = (state = {
     product: {}
 }, action) => {
@@ -187,6 +191,7 @@ export const productDetailsReducer = (state = {
     }
 };
 
+// for creating an review to the product
 export const newReviewReducer = (state = {}, action) => {
     switch (action.type) {
         case NEW_REVIEW_REQUEST:
@@ -217,6 +222,7 @@ export const newReviewReducer = (state = {}, action) => {
     }
 };
 
+// to get all reviews on the product by the admin 
 export const productReviewsReducer = (state = {
     reviews: []
 }, action) => {
@@ -245,6 +251,8 @@ export const productReviewsReducer = (state = {
     }
 };
 
+
+// this is to delete a review by the admin 
 export const reviewReducer = (state = {}, action) => {
     switch (action.type) {
         case DELETE_REVIEW_REQUEST:

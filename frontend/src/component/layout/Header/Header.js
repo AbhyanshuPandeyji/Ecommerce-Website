@@ -42,6 +42,8 @@ const Header = () => {
 
     const dispatch = useDispatch();
 
+    const { cartItems } = useSelector((state) => state.cart);
+
     // function for the search filter
     const searchSubmitHandler = (e) => {
         e.preventDefault();
@@ -82,16 +84,16 @@ const Header = () => {
                                 <Link className="nav-link texts" to="/products"><ShoppingBagIcon className='m-2'/>Products</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link texts" to="/"><PhoneIcon className='m-2'/>Contact</Link>
+                                <Link className="nav-link texts" to="/contact"><PhoneIcon className='m-2'/>Contact</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link texts" to="/"><PersonIcon className='m-2'/>About</Link>
+                                <Link className="nav-link texts" to="/about"><PersonIcon className='m-2'/>About</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link texts" to="/"><ShoppingCartIcon className='m-2'/>Cart</Link>
+                                <Link className="nav-link texts" to="/cart"><ShoppingCartIcon className='m-2' style={{color: cartItems.length > 0 ? "tomato" : "unset" }} />Cart&nbsp;<sup><b>{cartItems.length}</b></sup></Link>
                             </li>
                             {
-                            isAuthenticated ? (
+                            isAuthenticated  ? (
                                 <li className="nav-item dropdown">
 
                                     <Link className="nav-link dropdown-toggle texts" to="" role="button" data-bs-toggle="dropdown" aria-expanded="false">

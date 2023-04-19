@@ -1,7 +1,8 @@
 // this is to get all orders details and work on it for admin only
 import React, { Fragment, useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import "./productList.css";
+import "./OrderList.css"
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 // import { useAlert } from "react-alert";
@@ -21,17 +22,19 @@ import { DELETE_ORDER_RESET } from "../../constants/orderConstants";
 
 // same as Products details just we are here only updating and deleting and viewing the orders
 
-const OrderList = ({ history }) => {
+const OrderList = () => {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
 
   // redux state of all orders 
-  const { error, orders } = useSelector((state) => state.allOrders);
+  const { error, orders , orderStatus} = useSelector((state) => state.allOrders);
 
+  // redux state of the orders
   const { error: deleteError, isDeleted } = useSelector((state) => state.order);
 
+  // this is to delete the order from our side
   const deleteOrderHandler = (id) => {
     dispatch(deleteOrder(id));
   };
@@ -42,20 +45,25 @@ const OrderList = ({ history }) => {
       dispatch(clearErrors());
     }
 
+    // if order delete gets an error
     if (deleteError) {
       toast.error(deleteError);
       dispatch(clearErrors());
     }
 
+    // if order deleted
     if (isDeleted) {
       toast.success("Order Deleted Successfully");
+      // once order is deleted then go to the orders
       navigate("/admin/orders");
+      // this is to stop its process after one time
       dispatch({ type: DELETE_ORDER_RESET });
     }
 
     // to get all orders
     dispatch(getAllOrders());
   }, [dispatch, error, deleteError, navigate , isDeleted]);
+
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
@@ -65,8 +73,9 @@ const OrderList = ({ history }) => {
       headerName: "Status",
       minWidth: 150,
       flex: 0.5,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
+      // the color change don't work
+      cellClassName: () => {
+        return  orderStatus === "Delivered"
           ? "greenColor"
           : "redColor";
       },
@@ -97,13 +106,14 @@ const OrderList = ({ history }) => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/order/${params.getValue(params.id, "id")}`}>
+            {/* to go to the order single */}
+            <Link to={`/admin/order/${params.id}`}>
               <EditIcon />
             </Link>
 
             <Button
               onClick={() =>
-                deleteOrderHandler(params.getValue(params.id, "id"))
+                deleteOrderHandler(params.id)
               }
             >
               <DeleteIcon />
@@ -117,6 +127,7 @@ const OrderList = ({ history }) => {
   const rows = [];
 
   // to add all orders of in the rows
+  // this take the order an take its details
   orders &&
     orders.forEach((item) => {
       rows.push({
@@ -135,7 +146,7 @@ const OrderList = ({ history }) => {
         <SideBar />
         <div className="productListContainer">
           <h1 id="productListHeading">ALL ORDERS</h1>
-
+          {/* to show the orders list */}
           <DataGrid
             rows={rows}
             columns={columns}

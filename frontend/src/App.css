@@ -3,6 +3,7 @@
     scroll-behavior: smooth;
   }
   
+  /* this is to have a personal created cursor */
   body {
     cursor: url("./images/cursor.png"), auto;
   }

@@ -1,6 +1,8 @@
+// this is to change the processing state of the order
+
 import React, { Fragment, useEffect, useState } from "react";
 import MetaData from "../layout/MetaData";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 import SideBar from "./Sidebar";
 import {
@@ -15,42 +17,55 @@ import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { Button } from "@mui/material";
 import { UPDATE_ORDER_RESET } from "../../constants/orderConstants";
 import "./processOrder.css";
+import { ToastContainer, toast } from "react-toastify";
 
-const ProcessOrder = ({ history, match }) => {
-  const { order, error, loading } = useSelector((state) => state.orderDetails);
-  const { error: updateError, isUpdated } = useSelector((state) => state.order);
+const ProcessOrder = () => {
+  
+  const navigate = useNavigate();
+  const { id } = useParams();
+  
+  // to get the details of the order
+  const { order, error, loading , orderStatus } = useSelector((state) => state.orderDetails);
+  const { error: updateError, isUpdated  } = useSelector((state) => state.order);
 
+
+  // changed the function name from the main component function
+  // this is to send the data of the processing to update or not
   const updateOrderSubmitHandler = (e) => {
     e.preventDefault();
 
+    // it will take just the status
     const myForm = new FormData();
 
     myForm.set("status", status);
 
-    dispatch(updateOrder(match.params.id, myForm));
+    dispatch(updateOrder(id, myForm));
   };
 
   const dispatch = useDispatch();
-  const alert = useAlert();
 
   const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
+    // if error in update
     if (updateError) {
-      alert.error(updateError);
+      toast.error(updateError);
       dispatch(clearErrors());
     }
+
+    // if updated successfully
     if (isUpdated) {
-      alert.success("Order Updated Successfully");
+      toast.success("Order Updated Successfully");
+      // this is to stop the process after 1 successful attempt of the update
       dispatch({ type: UPDATE_ORDER_RESET });
     }
 
-    dispatch(getOrderDetails(match.params.id));
-  }, [dispatch, alert, error, match.params.id, isUpdated, updateError]);
+    dispatch(getOrderDetails(id));
+  }, [dispatch, error, navigate, id, isUpdated, updateError]);
 
   return (
     <Fragment>
@@ -61,14 +76,17 @@ const ProcessOrder = ({ history, match }) => {
           {loading ? (
             <Loader />
           ) : (
+            // if the order is delivered the changing status will be hidden and main div will cover the whole page aside from the side bar
             <div
               className="confirmOrderPage"
               style={{
+                // to check the order status is delivered or not for styling the page 
                 display: order.orderStatus === "Delivered" ? "block" : "grid",
               }}
             >
               <div>
-                <div className="confirmshippingArea">
+                {/* this is our shipping info */}
+                <div className="confirmShippingArea">
                   <Typography>Shipping Info</Typography>
                   <div className="orderDetailsContainerBox">
                     <div>
@@ -90,9 +108,11 @@ const ProcessOrder = ({ history, match }) => {
                     </div>
                   </div>
 
+                  {/* this is our  payment info */}
                   <Typography>Payment</Typography>
                   <div className="orderDetailsContainerBox">
                     <div>
+                      {/* this is to color to the status */}
                       <p
                         className={
                           order.paymentInfo &&
@@ -101,22 +121,26 @@ const ProcessOrder = ({ history, match }) => {
                             : "redColor"
                         }
                       >
+                        {/* this is to show the appropriate result of the payment */}
                         {order.paymentInfo &&
                         order.paymentInfo.status === "succeeded"
                           ? "PAID"
                           : "NOT PAID"}
                       </p>
                     </div>
-
+                    
+                    {/* this is for amount that is been paid */}
                     <div>
                       <p>Amount:</p>
                       <span>{order.totalPrice && order.totalPrice}</span>
                     </div>
                   </div>
 
+                  {/* our order status */}
                   <Typography>Order Status</Typography>
                   <div className="orderDetailsContainerBox">
                     <div>
+                      {/* this is to color to the status */}
                       <p
                         className={
                           order.orderStatus && order.orderStatus === "Delivered"
@@ -124,11 +148,14 @@ const ProcessOrder = ({ history, match }) => {
                             : "redColor"
                         }
                       >
+                        {/* this is for setting the appropriate text for the delivery of the product */}
                         {order.orderStatus && order.orderStatus}
                       </p>
                     </div>
                   </div>
                 </div>
+
+                {/* this is to show the details of the product and the quantity we selected */}
                 <div className="confirmCartItems">
                   <Typography>Your Cart Items:</Typography>
                   <div className="confirmCartItemsContainer">
@@ -154,6 +181,7 @@ const ProcessOrder = ({ history, match }) => {
                   display: order.orderStatus === "Delivered" ? "none" : "block",
                 }}
               >
+                 {/* this form is to update the status of our order - processing , shipped or delivered */}
                 <form
                   className="updateOrderForm"
                   onSubmit={updateOrderSubmitHandler}
@@ -162,8 +190,12 @@ const ProcessOrder = ({ history, match }) => {
 
                   <div>
                     <AccountTreeIcon />
+                    {/* the category will be set one by one - first the shipped or not , next the delivered or not 
+                    because you cannot deliver product without it being shipped  */}
                     <select onChange={(e) => setStatus(e.target.value)}>
                       <option value="">Choose Category</option>
+                      {/* The Value of the string in the data base to check the variable should match here to check it right
+                      other wise it will throw the error */}
                       {order.orderStatus === "Processing" && (
                         <option value="Shipped">Shipped</option>
                       )}
@@ -174,6 +206,7 @@ const ProcessOrder = ({ history, match }) => {
                     </select>
                   </div>
 
+                  {/* if no category is been selected then the button will be disabled */}
                   <Button
                     id="createProductBtn"
                     type="submit"

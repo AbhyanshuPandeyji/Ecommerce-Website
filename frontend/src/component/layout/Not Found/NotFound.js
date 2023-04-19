@@ -1,8 +1,8 @@
 import React from "react";
-import ErrorIcon from "@material-ui/icons/Error";
 import "./NotFound.css";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const NotFound = () => {
   return (

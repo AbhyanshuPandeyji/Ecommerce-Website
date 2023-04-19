@@ -2,13 +2,18 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
 
 const fileUpload = require("express-fileupload");
 
 const path = require("path")
 
 // error middleware import 
-const errorMiddleware = require('./middleware/error')
+const errorMiddleware = require('./middleware/error');
+
+
+// config
+dotenv.config({path: "backend/config/config.env"});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -26,10 +31,14 @@ const user = require("./routes/userRoute");
 // For the Order Route
 const order = require("./routes/orderRoute");
 
+// for payment
+const payment = require("./routes/paymentRoute");
+
 // Using routes
 app.use('/api/v1', product);
 app.use('/api/v1', user);
 app.use('/api/v1', order);
+app.use('/api/v1', payment);
 
 // to take the whole build
 app.use(express.static(path.join(__dirname, "../frontend/build")));

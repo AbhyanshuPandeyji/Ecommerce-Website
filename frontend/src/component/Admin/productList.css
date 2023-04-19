@@ -51,4 +51,9 @@
   .productListTable div {
     font: 300 4vw "Roboto";
   }
+  /* this is been added */
+  .productListContainer{
+    overflow-x: hidden;
+  }
+  
 }

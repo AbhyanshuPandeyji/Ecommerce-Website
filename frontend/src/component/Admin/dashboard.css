@@ -1,11 +1,14 @@
 .dashboard {
   width: 100vw;
   max-width: 100%;
+  /* this will set the div size of the side bar in desktop 1/6 of the page and main 5/6 on the page */
   display: grid;
   grid-template-columns: 1fr 5fr;
+  /* this will set the things in the container to absolute  */
   position: absolute;
 }
 
+/* this is to set to be have the size */
 .dashboardContainer {
   border-left: 1px solid rgba(0, 0, 0, 0.13);
   background-color: rgb(255, 255, 255);
@@ -56,6 +59,7 @@
   flex-direction: column;
 }
 
+/* this is to change the color of the circles  */
 .dashboardSummaryBox2 > a:first-child {
   background-color: rgb(255, 110, 110);
   color: rgb(255, 255, 255);
@@ -75,6 +79,9 @@
   width: 30vmax;
   margin: auto;
 }
+
+
+/* Responsive Code */
 
 @media screen and (max-width: 600px) {
   .dashboard {

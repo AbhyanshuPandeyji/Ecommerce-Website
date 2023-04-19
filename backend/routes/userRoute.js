@@ -42,8 +42,8 @@ router.route('/me').get(isAuthenticatedUser, getUserDetails);
 // to update password
 router.route('/password/update').put(isAuthenticatedUser, updatePassword);
 
-// update profile
-router.route('/profile/update').put(isAuthenticatedUser, updateProfile);
+// update profile - it was me/update , but i can change it later
+router.route('/me/update').put(isAuthenticatedUser, updateProfile);
 
 
 // Admin Routes

@@ -25,6 +25,7 @@ process.on("uncaughtException",(err)=>{
 if(process.env.NODE_ENV !== "PRODUCTION"){
     // when hosting online it won't run we will give the variable in production time to The PRODUCTION variable to check it 
     // directly importing the env 
+    // this will come in later use
     require('dotenv').config({path:"backend/config/config.env"}); 
 
 }

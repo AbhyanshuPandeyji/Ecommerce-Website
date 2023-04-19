@@ -5,7 +5,6 @@ import {
   updateProduct,
   getProductDetails,
 } from "../../actions/productAction";
-// import { useAlert } from "react-alert";
 import MetaData from "../layout/MetaData";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -20,11 +19,11 @@ import { toast , ToastContainer } from "react-toastify";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
-  // const alert = useAlert();
   const navigate = useNavigate();
 
   const { id } = useParams();
 
+  // this will take the product single from the product details state
   const { error, product } = useSelector((state) => state.productDetails);
 
   const {
@@ -53,18 +52,25 @@ const UpdateProduct = () => {
   ];
 
   const productId = id;
-
+  
   useEffect(() => {
+    // if product is exist - this will be dispatch only if the product id and id in url doesn't match
+    // otherwise as use effect it will resend it again and again
     if (product && product._id !== productId) {
+      // to get product  details
       dispatch(getProductDetails(productId));
     } else {
+      // this will take all the data of the old product that been taken to updated
       setName(product.name);
       setDescription(product.description);
       setPrice(product.price);
       setCategory(product.category);
       setStock(product.Stock);
+      // it will all the images of the product that exits
       setOldImages(product.images);
     }
+
+    // if error occur
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
@@ -75,14 +81,15 @@ const UpdateProduct = () => {
       dispatch(clearErrors());
     }
 
+    // if product got updated
     if (isUpdated) {
       toast.success("Product Updated Successfully");
       navigate("/admin/products");
+      // this is to stop invoking function
       dispatch({ type: UPDATE_PRODUCT_RESET });
     }
   }, [
     dispatch,
-    alert,
     error,
     navigate,
     isUpdated,
@@ -90,48 +97,60 @@ const UpdateProduct = () => {
     product,
     updateError,
   ]);
-
+  
   const updateProductSubmitHandler = (e) => {
     e.preventDefault();
 
+    // form to take in the new values for the updated product
     const myForm = new FormData();
-
+    
     myForm.set("name", name);
     myForm.set("price", price);
     myForm.set("description", description);
     myForm.set("category", category);
     myForm.set("Stock", Stock);
 
+    // to add the new images to the product
     images.forEach((image) => {
       myForm.append("images", image);
     });
+
+    // to take the id of the product and form to send in to action  to take in the data of the
+    // product and change it
     dispatch(updateProduct(productId, myForm));
   };
 
+  // this is to change the images in the product 
   const updateProductImagesChange = (e) => {
     const files = Array.from(e.target.files);
 
+    // it will be empty initally 
     setImages([]);
     setImagesPreview([]);
     setOldImages([]);
 
+    // this will read all the files of the images
     files.forEach((file) => {
       const reader = new FileReader();
 
+      // this will take the files we choose as the images
       reader.onload = () => {
+        // this will run the function when the 2 state the success will happen
         if (reader.readyState === 2) {
+          // this is to add the new images add one onto another 
           setImagesPreview((old) => [...old, reader.result]);
           setImages((old) => [...old, reader.result]);
         }
       };
 
+
       reader.readAsDataURL(file);
     });
   };
-
+  
   return (
     <Fragment>
-      <MetaData title="Create Product" />
+      <MetaData title="Update Product" />
       <div className="dashboard">
         <SideBar />
         <div className="newProductContainer">
@@ -140,8 +159,9 @@ const UpdateProduct = () => {
             encType="multipart/form-data"
             onSubmit={updateProductSubmitHandler}
           >
-            <h1>Create Product</h1>
+            <h1>Update Product</h1>
 
+            {/* taking the product name */}
             <div>
               <SpellcheckIcon />
               <input
@@ -152,6 +172,7 @@ const UpdateProduct = () => {
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
+            {/* taking in the price */}
             <div>
               <AttachMoneyIcon />
               <input
@@ -163,6 +184,7 @@ const UpdateProduct = () => {
               />
             </div>
 
+            {/* taking in the description */}
             <div>
               <DescriptionIcon />
 
@@ -175,6 +197,7 @@ const UpdateProduct = () => {
               ></textarea>
             </div>
 
+            {/* The is to choose the category of the product */}
             <div>
               <AccountTreeIcon />
               <select
@@ -211,6 +234,8 @@ const UpdateProduct = () => {
               />
             </div>
 
+
+            {/* this is to choose the images */}
             <div id="createProductFormImage">
               {oldImages &&
                 oldImages.map((image, index) => (
@@ -229,7 +254,7 @@ const UpdateProduct = () => {
               type="submit"
               disabled={loading ? true : false}
             >
-              Create
+              Update
             </Button>
           </form>
         </div>

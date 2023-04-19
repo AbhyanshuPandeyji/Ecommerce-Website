@@ -1,17 +1,20 @@
 import React, { Fragment, useState, useEffect } from "react";
 import "./UpdateProfile.css";
 import Loader from "../layout/Loader/Loader";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import FaceIcon from "@material-ui/icons/Face";
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import FaceIcon from '@mui/icons-material/Face';
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, updateProfile, loadUser } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
 import { UPDATE_PROFILE_RESET } from "../../constants/userConstants";
 import MetaData from "../layout/MetaData";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer , toast } from 'react-toastify';
 
-const UpdateProfile = ({ history }) => {
+const UpdateProfile = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  // const alert = useAlert();
+  const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.user);
   const { error, isUpdated, loading } = useSelector((state) => state.profile);
@@ -32,10 +35,12 @@ const UpdateProfile = ({ history }) => {
     dispatch(updateProfile(myForm));
   };
 
+  // this function to change the user profile image to new one
   const updateProfileDataChange = (e) => {
     const reader = new FileReader();
 
     reader.onload = () => {
+      // 0 for initial state , 1 for loading , 2 for success of the process
       if (reader.readyState === 2) {
         setAvatarPreview(reader.result);
         setAvatar(reader.result);
@@ -45,7 +50,9 @@ const UpdateProfile = ({ history }) => {
     reader.readAsDataURL(e.target.files[0]);
   };
 
+
   useEffect(() => {
+    // if user exist - which usually does
     if (user) {
       setName(user.name);
       setEmail(user.email);
@@ -53,21 +60,22 @@ const UpdateProfile = ({ history }) => {
     }
 
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
 
     if (isUpdated) {
-      alert.success("Profile Updated Successfully");
+      toast.success("Profile Updated Successfully");
       dispatch(loadUser());
 
-      history.push("/account");
+      navigate("/account");
 
+      // this is to reset the update submission again and again
       dispatch({
         type: UPDATE_PROFILE_RESET,
       });
     }
-  }, [dispatch, error, alert, history, user, isUpdated]);
+  }, [dispatch, error, navigate, user, isUpdated]);
   return (
     <Fragment>
       {loading ? (
@@ -79,6 +87,7 @@ const UpdateProfile = ({ history }) => {
             <div className="updateProfileBox">
               <h2 className="updateProfileHeading">Update Profile</h2>
 
+              {/* on submit it will will initiate the function and give the value to the userAction of update profile */}
               <form
                 className="updateProfileForm"
                 encType="multipart/form-data"
