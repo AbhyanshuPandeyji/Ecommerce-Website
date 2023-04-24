@@ -44,6 +44,7 @@ import ProductReviews from  './component/Admin/ProductReviews.js'
 import Contact from "./component/layout/Contact/Contact.js";
 import About from "./component/layout/About/About.js";
 import NotFound from "./component/layout/Not Found/NotFound.js";
+import DeleteProfile from './component/User/DeleteProfile.js'
 // import AdminProtectedRoute from './component/Route/AdminProtectedRoute';
 
 // import ProductReviews from "./component/Admin/ProductReviews";
@@ -84,6 +85,7 @@ function App() {
   window.addEventListener("contextmenu", (e) => e.preventDefault());
 
 
+  
 
   return (
   <Router>
@@ -106,10 +108,11 @@ function App() {
         their element( of children route as shown ) will be the reference to the outlet for the nesting 
         the outlet is works as route in the protected route folder - and navigate as redirect to page we want */}
         {/* this works fine y */}
-        <Route  element={<ProtectedRoutes/>}>
+        {loading === false && <Route  element={<ProtectedRoutes isAuthenticated={isAuthenticated}/>}>
           {/* Route within a route - nesting route*/}
             <Route element={<Profile/>} path='/account' exact/>
             <Route element={<UpdateProfile/>} path='/me/update' exact/>
+            <Route element={<DeleteProfile/>} path='/me/delete/:id' exact/>
             <Route element={<UpdatePassword/>} path='/password/update' exact/>
             <Route element={<Shipping/>} path='/shipping' exact/>
             <Route element={<ConfirmOrder/>} path='/order/confirm' exact/>
@@ -123,7 +126,21 @@ function App() {
             <Route element={<OrderSuccess/>} path='/success' exact/>
             <Route element={<MyOrders/>} path='/orders' exact/>
             <Route element={<OrderDetails/>} path='/order/:id' exact/>
+            
+        </Route>
+        }
+            {/* <Route element={<Dashboard/>} path='/dashboard' exact/> */}
+        {/* it will be only route because you can't be logged in to access to forgot password - you have update password     */}
+        <Route element={<ForgotPassword/>} path='/password/forgot' exact/>
+        <Route element={<ResetPassword/>} path='/password/reset/:token' exact/>
+        <Route element={<Cart/>} path='/cart' exact/>
+        <Route element={<Contact/>} path='/contact' exact/>
+        <Route element={<About/>} path='/about' exact/>
+        {/* Admin Routes */}
 
+        {/* Cannot read properties of null (reading 'role') - the component is rendering before rendering the user  */}
+        {/* it works now the user role should be passed in the protected route because this will load the component first then the user so it will give error on render */}
+        {loading === false && <Route element={<ProtectedRoutes isAuthenticated={isAuthenticated} adminRoute={true} />}>
             {/* these admin routes will be separated later */}
             <Route element={<Dashboard/>} path='/admin/dashboard' exact/>
             <Route element={<ProductList/>} path='/admin/products' exact/>
@@ -135,25 +152,16 @@ function App() {
             <Route element={<UsersList/>} path='/admin/users' exact/>
             <Route element={<UpdateUser/>} path='/admin/user/:id' exact/>
             <Route element={<ProductReviews/>} path='/admin/reviews' exact/>
-            
         </Route>
-            
-            {/* <Route element={<Dashboard/>} path='/dashboard' exact/> */}
-        {/* it will be only route because you can't be logged in to access to forgot password - you have update password     */}
-        <Route element={<ForgotPassword/>} path='/password/forgot' exact/>
-        <Route element={<ResetPassword/>} path='/password/reset/:token' exact/>
-        <Route element={<Cart/>} path='/cart' exact/>
-        <Route element={<Contact/>} path='/contact' exact/>
-        <Route element={<About/>} path='/about' exact/>
-        {/* Admin Routes */}
+        } 
         
         {/* <Route  element={<ProtectedRoutes isAdmin={true}/>}>
         </Route> */}
 
         {/* This wont work it works with switch statement */}
-        {/* <Route component={
-            window.location.pathname === "/process/payment" ? null : NotFound
-          }/>*/}
+        <Route Component={
+            window.location.pathname === "/process/payment" ? null : <NotFound/>
+          }/>
       </Routes> 
     <Footer/>
     </Router>

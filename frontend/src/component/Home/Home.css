@@ -1,6 +1,7 @@
 /* Banner Image Section */
 .banner {
-    background-image: url("../../images/cover.jfif");
+    /* background-image: url("../../images/cover.jfif"); */
+    background-image: url("../../../public/images/banners/banner-plain.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -36,12 +37,13 @@
     width: 9vmax;
     font: 500 1vmax "Roboto";
   }
+
   .banner > a > button:hover {
     background-color: rgba(255, 255, 255, 0);
     color: white;
   }
   
-  .banner::after {
+  /* .banner::after {
     content: "";
     width: 100vw;
     height: 100vmin;
@@ -51,7 +53,7 @@
     left: 0;
     clip-path: polygon(100% 68%, 0 100%, 100% 100%);
     max-width: 100%;
-  }
+  } */
   
   /* Home Products Heading */
   .homeHeading {
@@ -72,6 +74,7 @@
     margin: 2vmax auto;
     width: 80vw;
     flex-wrap: wrap;
+    
     justify-content: center;
     max-width: 100%;
   }
@@ -83,6 +86,8 @@
     flex-direction: column;
     text-decoration: none;
     color: rgb(48, 48, 48);
+    box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
     margin: 2vmax;
     transition: all 0.5s;
     padding-bottom: 0.5vmax;
@@ -90,6 +95,7 @@
   
   .productCard > img {
     width: 14vmax;
+    border-radius: 10px ;
     /* height: 15vmax; */
   }
   
@@ -120,7 +126,9 @@
   }
   
   .productCard:hover {
-    box-shadow: 0 0 5px rgba(15, 15, 15, 0.26);
+    /* box-shadow: 0 0 5px rgba(15, 15, 15, 0.26); */
+    box-shadow: 10px 10px 50px rgba(164, 207, 64, 0.534);
+
   
     transform: translateY(-1vmax);
   }

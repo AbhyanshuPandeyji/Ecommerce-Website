@@ -229,6 +229,7 @@ const ProductDetails = () => {
                         aria-labelledby="simple-dialog-title"
                         // this is handle by use state
                         open={open}
+                        className='DialogMain'
                         onClose={submitReviewToggle}
                     >
                         <DialogTitle>Submit Review</DialogTitle>

@@ -11,7 +11,8 @@ const {
     getAllUsers,
     getSingleUser,
     updateUserRole,
-    deleteUserProfile
+    deleteUserProfile,
+    deleteProfile
 } = require("../controllers/userController");
 const {isAuthenticatedUser, authorizeRoles} = require("../middleware/auth");
 const router = express.Router();
@@ -45,6 +46,8 @@ router.route('/password/update').put(isAuthenticatedUser, updatePassword);
 // update profile - it was me/update , but i can change it later
 router.route('/me/update').put(isAuthenticatedUser, updateProfile);
 
+// delete account by the user itself
+router.route('/me/delete/:id').delete( isAuthenticatedUser , deleteProfile);
 
 // Admin Routes
 // to get all users (admin)

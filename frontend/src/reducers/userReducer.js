@@ -31,6 +31,12 @@ import {
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAIL,
+    // this is to user to delete his profile
+    DELETE_PROFILE_REQUEST,
+    DELETE_PROFILE_SUCCESS,
+    DELETE_PROFILE_FAIL,
+    DELETE_PROFILE_RESET,
+
 
     // this is to get all users from the database
     ALL_USERS_REQUEST,
@@ -112,6 +118,7 @@ export const profileReducer = (state = {}, action) => {
     switch (action.type) {
         case UPDATE_PROFILE_REQUEST:
         case UPDATE_PASSWORD_REQUEST:
+        case DELETE_PROFILE_REQUEST:
         // this is for the admin
         case UPDATE_USER_REQUEST:
         case DELETE_USER_REQUEST:
@@ -131,6 +138,7 @@ export const profileReducer = (state = {}, action) => {
 
             // this is for the admin
         case DELETE_USER_SUCCESS:
+        case DELETE_PROFILE_SUCCESS:
             return {
                 ...state,
                 loading: false,
@@ -141,6 +149,7 @@ export const profileReducer = (state = {}, action) => {
 
         case UPDATE_PROFILE_FAIL:
         case UPDATE_PASSWORD_FAIL:
+            case DELETE_PROFILE_FAIL:
         //this is for the admin
         case UPDATE_USER_FAIL:
         case DELETE_USER_FAIL:
@@ -161,6 +170,7 @@ export const profileReducer = (state = {}, action) => {
 
             // only this reset will  change  
         case DELETE_USER_RESET:
+        case DELETE_PROFILE_RESET:
             return {
                 ...state,
                 isDeleted: false

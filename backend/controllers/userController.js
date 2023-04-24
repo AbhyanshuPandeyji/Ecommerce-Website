@@ -39,6 +39,29 @@ exports.registerUser = catchAsyncErrors( async(req,res,next)=>{
         },
     });
 
+    
+    // I need to start from here now to do the project  
+    
+    // message wil be send in email - \n is line break
+    const message = `We Welcome To Join Us , We Are Very Happy to Have you On Our Site`
+
+
+
+        // calling the email to be send
+        // this is giving the error right now 
+        // await sendEmail({
+        //     email: user.email,
+        //     subject:`E-Commerce Registered Email`,
+        //     // message from above
+        //     message,
+
+        // });
+
+        // res.status(200).json({
+        //     success:true,
+        //     message:`Email sent to ${user.email} successfully`,
+        // })
+
     // here will come the email send to user to register to the site
     // await sendEmail({
     //     email: user.email,
@@ -147,11 +170,11 @@ exports.forgotPassword = catchAsyncErrors( async(req,res,next)=>{
     // this will save the new generated token for the given amount of time for changing the password if it been used then password can be changed if it expires the password token just go back to normal
     // the reset is just the route
     // this will be our actual url in production mode
-    // const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
+    const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
 
 
     // this is our dummy email to generate token for the frontend - it wont be api/v1 it will start with the password url
-    const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`
+    // const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`
     
     // I need to start from here now to do the project  
     
@@ -335,6 +358,33 @@ exports.updateProfile = catchAsyncErrors( async(req,res,next)=>{
     });
 
 }); 
+
+
+// FUNCTIONALITY TO DELETE USER
+exports.deleteProfile = catchAsyncErrors( async(req,res,next)=>{
+    
+    const user = User.findById(req.params.id);
+    
+
+    if(!user){
+        return next(new ErrorHandler(`User does not exists with Id: ${req.params.id} `, 400));
+    }
+
+
+    const imageId = user.avatar.public_id;
+
+    await cloudinary.v2.uploader.destroy(imageId);
+
+    await user.deleteOne();
+
+    res.status(200).json({
+        success:true,
+        message:`Your Account Deleted Successfully`
+    });
+
+})
+
+
 
 
 

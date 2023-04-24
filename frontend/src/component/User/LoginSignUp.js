@@ -116,18 +116,19 @@ const LoginSignUp = () => {
 
   useEffect(() => {
     if (error) {
+      // this is the error for please login to access this resource
       toast.error(error);
       dispatch(clearErrors());
     }
 
-    if (isAuthenticated) {
+    if (isAuthenticated === true) {
       navigate("/account");
 
       // problem when checkout the user the success message comes first and then the check of the user
       if(user!=="null")
       toast.success("login successful");
     }
-  }, [dispatch, error , navigate, isAuthenticated, 
+  }, [dispatch, error , isAuthenticated , navigate , toast
     // redirect
   ]);
 

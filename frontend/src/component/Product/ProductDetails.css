@@ -10,6 +10,7 @@
   width: 20vmax;
   margin: auto;
 }
+
   .ProductDetails > div {
     width: 100%;
     display: flex;
@@ -144,6 +145,8 @@
     background-color: rgb(197, 68, 45);
     transform: scale(1.1);
   }
+  
+
   
   .submitDialog {
     display: flex;

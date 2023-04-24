@@ -30,6 +30,11 @@ import {
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAIL,
+    // for deleting the id by user
+    DELETE_PROFILE_REQUEST,
+    DELETE_PROFILE_SUCCESS,
+    DELETE_PROFILE_FAIL,
+    DELETE_PROFILE_RESET,
     // this is for getting all users - admin
     ALL_USERS_REQUEST,
     ALL_USERS_SUCCESS,
@@ -198,6 +203,23 @@ export const resetPassword = (token, passwords) => async (dispatch) => {
         dispatch({type: RESET_PASSWORD_FAIL, payload: error.response.data.message});
     }
 };
+
+
+// Delete User - delete a users id from the database
+export const deleteProfile = (id) => async (dispatch) => {
+    try {
+        dispatch({type: DELETE_PROFILE_REQUEST });
+
+        const {data} = await axios.delete(`/api/v1/me/delete/${id}`);
+
+        dispatch({type: DELETE_PROFILE_SUCCESS, payload: data});
+    } catch (error) {
+        dispatch({type: DELETE_PROFILE_FAIL, payload: error.response.data.message});
+    }
+};
+
+
+
 
 // get All Users - for admin
 export const getAllUsers = () => async (dispatch) => {

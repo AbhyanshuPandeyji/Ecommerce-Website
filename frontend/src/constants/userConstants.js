@@ -40,6 +40,12 @@ export const RESET_PASSWORD_REQUEST = "RESET_PASSWORD_REQUEST"
 export const RESET_PASSWORD_SUCCESS = "RESET_PASSWORD_SUCCESS"
 export const RESET_PASSWORD_FAIL = "RESET_PASSWORD_FAIL"
 
+// to delete the profile of the user itself
+export const DELETE_PROFILE_REQUEST = "DELETE_PROFILE_REQUEST";
+export const DELETE_PROFILE_SUCCESS = "DELETE_PROFILE_SUCCESS";
+export const DELETE_PROFILE_FAIL = "DELETE_PROFILE_FAIL";
+export const DELETE_PROFILE_RESET = "DELETE_PROFILE_RESET";
+
 
 // constants for the user access for the admin
 

@@ -6,6 +6,8 @@ import {clearErrors, getProduct} from '../../actions/productAction.js'
 
 import {useSelector, useDispatch} from 'react-redux'
 import Loader from '../layout/Loader/Loader.js';
+import Feature from '../layout/Feature/Feature.js'
+import Banner from '../layout/Banner/Banner.js'
 
 import {ToastContainer, toast} from 'react-toastify';
 
@@ -19,6 +21,7 @@ const Home = () => { // Initializing the dispatch function
 
     const {loading, error, products} = useSelector(state => state.products);
 
+    
     useEffect(() => {
         if (error) {
             toast.error(error, {position: "bottom-center"});
@@ -26,7 +29,7 @@ const Home = () => { // Initializing the dispatch function
         }
 
         dispatch(getProduct());
-    }, [dispatch, error]);
+    }, [dispatch, error , toast]);
 
     return (
         <Fragment> {
@@ -49,6 +52,8 @@ const Home = () => { // Initializing the dispatch function
                         </a>
                     </div>
 
+                    <Feature/>
+
                     {/* The Heading of Our Feature Product */}
                     <h2 className='homeHeading'>Featured Product</h2>
 
@@ -58,29 +63,19 @@ const Home = () => { // Initializing the dispatch function
                         {/* this will come from the redux later */}
 
                         {
-                        products && products.map(product => (
-                            <ProductCard product={product}
+                            products && products.map(product => (
+                                <ProductCard product={product}
                                 key={
                                     product._id
                                 }/>
-                        ))
-                    } </div>
+                                ))
+                            } </div>
+
+                            <Banner/>
                     {/* <ToastContainer/> */}
                     {/* if below not work then this will be linked to the page */} </Fragment>
             )
         }
-            <ToastContainer position="bottom-center"
-                autoClose={2000}
-                limit={1}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover={false}
-                theme="light"/> 
-                {/* i am testing it here if its work or not */} 
                 </Fragment>
     )
 }

@@ -73,9 +73,12 @@
   }
   
   .filterBox {
-    width: 10vmax;
+    width: 12vmax;
     position: absolute;
-    top: 14vmax;
+    padding: 20px;
+    box-shadow: 20px 20px 10px rgba(0, 0, 0, 0.2);
+    top: 16vmax;
+    border-radius: 20px;
     left: 2vmax;
   }
   
@@ -102,7 +105,7 @@
   
   @media screen and (max-width: 600px) {
     .filterBox {
-      width: 20vmax;
+      width: 30vmax;
       position: static;
       margin: auto;
     }
