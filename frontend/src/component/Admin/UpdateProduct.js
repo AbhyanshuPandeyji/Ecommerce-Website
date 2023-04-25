@@ -43,12 +43,13 @@ const UpdateProduct = () => {
 
   const categories = [
     "Laptop",
-    "Footwear",
-    "Bottom",
-    "Tops",
-    "Attire",
+    "Television",
+    "Dresses",
+    "Smartphone",
+    "Computer",
+    "Digital",
+    "Wardrobe",
     "Camera",
-    "SmartPhones",
   ];
 
   const productId = id;

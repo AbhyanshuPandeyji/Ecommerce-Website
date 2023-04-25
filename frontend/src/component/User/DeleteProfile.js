@@ -9,6 +9,8 @@ import {Button, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import Loader from '../layout/Loader/Loader';
+import MetaData from "../layout/MetaData";
+
 
 
 const DeleteUser = () => {
@@ -64,6 +66,7 @@ const DeleteUser = () => {
             loading ? (
                 <Loader/>) : (
                 <Fragment>
+                    <MetaData title="Delete Profile"/>
                     <div className="emptyCart">
 
                         <Typography>Do You Want to Delete Your Account</Typography>

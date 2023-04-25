@@ -31,6 +31,7 @@ if(process.env.NODE_ENV !== "PRODUCTION"){
 }
 
 
+
 // this should be done after process .env file 
 // connect to database
 connectDatabase();

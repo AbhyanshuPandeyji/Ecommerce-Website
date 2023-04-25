@@ -17,12 +17,13 @@ import {useParams} from 'react-router-dom';
 // for showing the categories
 const categories = [
     "Laptop",
-    "Footwear",
-    "Bottom",
-    "Tops",
-    "Mobile",
-    "TV",
-    "Mouse",
+    "Television",
+    "Dresses",
+    "Smartphone",
+    "Computer",
+    "Digital",
+    "Wardrobe",
+    "Camera",
 ];
 
 const Products = () => { // for pagination
