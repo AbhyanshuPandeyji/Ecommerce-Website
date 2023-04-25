@@ -35,12 +35,13 @@ const NewProduct = () => {
   // to know  which type of products can be created 
   const categories = [
     "Laptop",
-    "Footwear",
-    "Bottom",
-    "Tops",
-    "Attire",
+    "Television",
+    "Dresses",
+    "Smartphone",
+    "Computer",
+    "Digital",
+    "Wardrobe",
     "Camera",
-    "SmartPhones",
   ];
 
   
