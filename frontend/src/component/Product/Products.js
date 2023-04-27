@@ -18,12 +18,12 @@ import {useParams} from 'react-router-dom';
 const categories = [
     "Laptop",
     "Television",
-    "Dresses",
     "Smartphone",
     "Computer",
     "Digital",
     "Wardrobe",
     "Camera",
+    "Book",
 ];
 
 const Products = () => { // for pagination
@@ -64,18 +64,13 @@ const Products = () => { // for pagination
     const priceHandler = (event, newPrice) => {
         setPrice(newPrice);
     }
-    const errorAlert = () => {
-        toast.error( "how awesome" ,{
-            position:"bottom-center"
-        });
-    }
-   
+    
 
     // effect function for every thing filter ,pagination, search to products
     useEffect(() => {
         if(error){
             // error message works just need to fix the infinite messages
-            errorAlert();
+            toast.error(error);
             dispatch(clearErrors());
         }
         dispatch(getProduct(keyword, currentPage, price, category, ratings))

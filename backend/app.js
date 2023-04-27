@@ -10,17 +10,20 @@ const fileUpload = require("express-fileupload");
 
 const path = require("path")
 
-// error middleware import 
+// error middleware import
 const errorMiddleware = require('./middleware/error');
 
 
 // config
-dotenv.config({path: "backend/config/config.env"});
+if (process.env.NODE_ENV !== "PRODUCTION") {
+    require("dotenv").config({path: "backend/config/config.env"});
+}
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileUpload());
+// this will be required
 // app.use(cors({
 //     origin: ['http://localhost:3000' , "https://ecommsite-9l0t.onrender.com"],
 // }));
@@ -46,16 +49,14 @@ app.use('/api/v1', order);
 app.use('/api/v1', payment);
 
 
-
 // to take the whole build
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 // to get data by rendering on any url of our website - it will run even if the frontend is closed
 // type local host 4000
-app.get("*" , (req,res)=>{
+app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"))
 })
-
 
 
 // Middle ware for error

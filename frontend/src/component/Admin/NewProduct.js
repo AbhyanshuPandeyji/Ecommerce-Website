@@ -36,12 +36,12 @@ const NewProduct = () => {
   const categories = [
     "Laptop",
     "Television",
-    "Dresses",
     "Smartphone",
     "Computer",
     "Digital",
     "Wardrobe",
     "Camera",
+    "Book",
   ];
 
   

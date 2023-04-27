@@ -170,11 +170,11 @@ exports.forgotPassword = catchAsyncErrors( async(req,res,next)=>{
     // this will save the new generated token for the given amount of time for changing the password if it been used then password can be changed if it expires the password token just go back to normal
     // the reset is just the route
     // this will be our actual url in production mode
-    const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
+    // const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
 
 
     // this is our dummy email to generate token for the frontend - it wont be api/v1 it will start with the password url
-    // const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`
+    const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`
     
     // I need to start from here now to do the project  
     
